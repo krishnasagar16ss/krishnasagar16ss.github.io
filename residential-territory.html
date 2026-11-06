@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#111d34"><meta name="application-version" content="ALZA-RESIDENTIAL-TERRITORY-1.2">
+<meta name="theme-color" content="#111d34"><meta name="application-version" content="ALZA-RESIDENTIAL-TERRITORY-1.3">
 <title>ALZA ORG | Residential Territory</title>
 <style>
 :root{--navy:#111d34;--navy2:#1c2c49;--gold:#d7b66f;--paper:#f3f2ee;--ink:#172238;--muted:#778293;--line:#e1e5ea;--white:#fff;--red:#b95353;--green:#34765d;--shadow:0 16px 50px #15213a12}
@@ -80,6 +80,8 @@ async function loadLoginOptions(){
 }
 function setMode(mode){state.mode=mode;$("associateTab").classList.toggle("active",mode==="associate");$("adminTab").classList.toggle("active",mode==="admin");$("nameLabel").textContent=mode==="admin"?"ADMIN NAME":"ASSOCIATE NAME";$("loginName").value="";delete $("loginName").dataset.valid;$("loginName").placeholder=mode==="admin"?"Search administrator name":"Search associate name";status("loginStatus","");}
 combo("loginName","loginMenu",()=> (state.mode==="admin"?state.admins:state.associates).map(a=>({label:a.name,value:a.id})),()=>{});
+combo("visit1","visit1Menu",()=>RESP.map(x=>({label:x,value:x})),()=>{});
+combo("visit2","visit2Menu",()=>RESP.map(x=>({label:x,value:x})),()=>{});
 async function signIn(e){
  e.preventDefault();status("loginStatus","");
  const username=$("loginName").value.trim(),password=$("password").value;

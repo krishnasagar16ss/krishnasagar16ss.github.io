@@ -20,7 +20,7 @@ main{max-width:1120px;margin:26px auto;padding:0 18px 50px}.welcome{display:flex
 .listhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 12px}.listhead h2{margin:0}.search{width:100%;border:1px solid #dce3ec;border-radius:10px;padding:11px 12px;margin:4px 0 12px;outline:none}
 .record{border:1px solid var(--line);border-radius:13px;padding:13px;margin:9px 0}.recordtop{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.house{font-weight:800;font-size:15px}.subline{font-size:12px;color:var(--muted);margin-top:2px}.chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}.chip{font-size:11px;border-radius:20px;padding:5px 9px;background:#edf1f6;color:#445269}.chip.done{background:#e8f5ef;color:#18724f}.chip.pending{background:#fff4df;color:#94600e}.notes{font-size:12px;color:#566276;white-space:pre-wrap;margin:6px 0}.recordfoot{display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid #eff2f6;padding-top:9px;margin-top:8px}.reminder{font-size:11px;color:#93630f}.actions{display:flex;gap:6px}.mini{font-size:11px;padding:7px 9px;border-radius:8px;background:#eef1f6;color:#253650;font-weight:750}
 .empty{padding:25px 10px;text-align:center;color:var(--muted);font-size:13px}.section-label{font-size:11px;letter-spacing:1.3px;font-weight:800;color:#8b6c32;margin:17px 0 7px}
-.loginwrap{min-height:calc(100vh - 67px);display:grid;place-items:center;padding:25px 16px}.login{width:min(440px,100%);padding:27px}.login h1{font-size:26px;margin:15px 0 5px}.login p{color:var(--muted);font-size:13px}.login .field{margin:15px 0}.login .btn{width:100%;margin-top:8px}
+.loginwrap{min-height:calc(100vh - 67px);display:grid;place-items:center;padding:25px 16px}.login{width:min(440px,100%);padding:27px}.login h1{font-size:26px;margin:15px 0 5px}.login p{color:var(--muted);font-size:13px}.login .field{margin:15px 0}.login .btn{width:100%;margin-top:8px}.rolebar{display:flex;gap:8px;margin:18px 0}.rolebar button{flex:1;padding:10px;border-radius:9px;background:#edf1f6;color:#263650;font-weight:750}.rolebar button.active{background:#101d35;color:#fff}.filters{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}.filters input,.filters select{min-width:0;width:100%;border:1px solid #dce3ec;border-radius:9px;padding:10px;background:white}.adminbar{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}.adminbar .field{margin:0}.adminbar .field.full{grid-column:1/-1}
 footer{text-align:center;padding:25px;color:#9aa4b2;font-size:11px;letter-spacing:.7px}
 @media(max-width:800px){.layout{grid-template-columns:1fr}.stats{gap:8px}.stat{padding:13px}.stat strong{font-size:23px}}
 @media(max-width:520px){header{padding:12px 14px}.brand{font-size:13px}.mark{width:32px;height:32px}.online{display:none}main{margin:18px auto;padding:0 12px 35px}.welcome h1{font-size:24px}.welcome{align-items:flex-start;flex-direction:column}.stats{grid-template-columns:repeat(3,1fr)}.stat span{font-size:10px}.stat strong{font-size:21px}.panel{padding:15px}.fields{grid-template-columns:1fr 1fr;gap:10px}.field input,.field textarea{padding:11px 10px;font-size:14px}.login{padding:23px}}
@@ -28,11 +28,11 @@ footer{text-align:center;padding:25px;color:#9aa4b2;font-size:11px;letter-spacin
 </head>
 <body>
 <header><div class="brand"><div class="mark">A</div><div>ALZA ORG<small>RESIDENTIAL TERRITORY</small></div></div><div class="topright"><span id="net" class="online">● ONLINE</span><button id="logout" class="btn ghost hidden">LOG OUT</button></div></header>
-<section id="loginView" class="loginwrap"><div class="panel login"><div class="eyebrow">PEOPLE • PURPOSE • PERFORMANCE</div><h1>Associate sign in</h1><p>Use the same associate name and password you use for ALZA ORG TMC Manager.</p><form id="loginForm"><div class="field"><label>ASSOCIATE NAME</label><input id="username" autocomplete="username" required placeholder="Enter your registered name"></div><div class="field"><label>PASSWORD</label><input id="password" type="password" autocomplete="current-password" required placeholder="Your TMC password"></div><button id="loginBtn" class="btn gold" type="submit">SIGN IN</button><div id="loginMsg" class="status"></div></form></div></section>
-<main id="appView" class="hidden">
+<section id="loginView" class="loginwrap"><div class="panel login"><div class="eyebrow">PEOPLE • PURPOSE • PERFORMANCE</div><h1>Sign in</h1><p>Use your existing ALZA ORG TMC Manager credentials.</p><div class="rolebar"><button type="button" id="associateMode" class="active">ASSOCIATE</button><button type="button" id="adminMode">ADMIN</button></div><form id="loginForm"><div class="field"><label>ASSOCIATE NAME</label><input id="username" autocomplete="username" required placeholder="Enter your registered name"></div><div class="field"><label>PASSWORD</label><input id="password" type="password" autocomplete="current-password" required placeholder="Your TMC password"></div><button id="loginBtn" class="btn gold" type="submit">SIGN IN</button><div id="loginMsg" class="status"></div></form></div></section>
+<main id="appView" class="hidden">\n<section id="adminPanel" class="panel hidden" style="margin-bottom:18px"><div class="eyebrow">ADMINISTRATION</div><h2>Associate territory reports</h2><p class="hint">Select an associate and date range to review residential visits. Export the selected report as an image.</p><div class="adminbar"><div class="field full"><label>SEARCH ASSOCIATE</label><input id="adminSearch" list="associateOptions" placeholder="Type associate name"><datalist id="associateOptions"></datalist></div><div class="field"><label>FROM DATE</label><input type="date" id="adminFrom"></div><div class="field"><label>TO DATE</label><input type="date" id="adminTo"></div></div><div class="form-actions"><button id="adminLoad" class="btn gold" type="button">LOAD REPORT</button><button id="adminImage" class="btn light" type="button" disabled>DOWNLOAD AS IMAGE</button></div><div id="adminMsg" class="status"></div><div id="adminReport"></div></section>
 <div class="welcome"><div><div class="eyebrow">YOUR FIELD WORKSPACE</div><h1>Welcome, <span id="associateName">Associate</span></h1><div class="muted" style="font-size:13px">Track every house visit and plan your next follow-up.</div></div><button id="newEntry" class="btn light">＋ NEW HOUSE</button></div>
 <div class="stats"><div class="stat"><span>HOUSES RECORDED</span><strong id="totalCount">0</strong></div><div class="stat"><span>REWORK REQUIRED</span><strong id="reworkCount">0</strong></div><div class="stat"><span>REMINDERS</span><strong id="reminderCount">0</strong></div></div>
-<div class="layout">
+<div id="associateWorkspace"><div class="filters"><input type="date" id="myFrom" aria-label="From date"><input type="date" id="myTo" aria-label="To date"></div><div class="form-actions" style="margin:0 0 12px"><button id="applyMyDates" class="btn light" type="button">FILTER MY DATES</button><button id="clearMyDates" class="btn light" type="button">CLEAR DATES</button></div><div class="layout">
 <section class="panel" id="entryPanel"><h2 id="formTitle">Add house visit</h2><p class="hint">Enter territory details once, then add each house below.</p>
 <form id="visitForm">
 <div class="territory"><div class="territory-title">TERRITORY DETAILS</div><div class="fields">
@@ -61,7 +61,7 @@ const SUPABASE_KEY="sb_publishable_KJYZ7oaCpzGS4yfupnNp-A_1gOUzwaN";
 const TMC_API=SUPABASE_URL+"/functions/v1/tmc-api";
 const DATA_API=SUPABASE_URL+"/functions/v1/residential-api";
 const $=id=>document.getElementById(id);
-const state={token:sessionStorage.getItem("residential_token")||"",associate:JSON.parse(sessionStorage.getItem("residential_associate")||"null"),visits:[],editing:null};
+const state={token:sessionStorage.getItem("residential_token")||"",associate:JSON.parse(sessionStorage.getItem("residential_associate")||"null"),visits:[],editing:null,mode:"associate",adminAssociates:[],adminVisits:[],adminSelected:null};
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function online(){return navigator.onLine}
 function setMsg(id,msg,type=""){ $(id).textContent=msg;$(id).className="status "+type}
@@ -76,10 +76,10 @@ function showApp(){ $("loginView").classList.add("hidden");$("appView").classLis
 async function signIn(e){e.preventDefault();if(!online()){setMsg("loginMsg","Connect to the internet to sign in.","error");return}
  $("loginBtn").disabled=true;setMsg("loginMsg","Checking TMC credentials...");
  try{const d=await request(TMC_API,"login",{username:$("username").value.trim(),password:$("password").value});
- state.token=d.token;state.associate=d.associate;sessionStorage.setItem("residential_token",state.token);sessionStorage.setItem("residential_associate",JSON.stringify(state.associate));showApp();await loadVisits();
+ if(state.mode==="admin"&&!d.isAdmin)throw new Error("This TMC account does not have administrator access.");state.token=d.token;state.associate=d.associate;sessionStorage.setItem("residential_token",state.token);sessionStorage.setItem("residential_associate",JSON.stringify(state.associate));showApp();if(d.isAdmin){$("adminPanel").classList.remove("hidden");$("associateWorkspace").classList.add("hidden");await loadAdminAssociates()}else{$("adminPanel").classList.add("hidden");$("associateWorkspace").classList.remove("hidden");await loadVisits()}
  }catch(x){setMsg("loginMsg",x.message,"error")}finally{$("loginBtn").disabled=false}}
-async function logout(){try{await request(TMC_API,"logout",{},state.token)}catch{}state.token="";state.associate=null;state.visits=[];state.editing=null;sessionStorage.removeItem("residential_token");sessionStorage.removeItem("residential_associate");showLogin()}
-async function loadVisits(){const d=await data("list");state.visits=d.visits||[];render()}
+async function logout(){try{await request(TMC_API,"logout",{},state.token)}catch{}$("adminPanel").classList.add("hidden");$("associateWorkspace").classList.remove("hidden");state.token="";state.associate=null;state.visits=[];state.editing=null;sessionStorage.removeItem("residential_token");sessionStorage.removeItem("residential_associate");showLogin()}
+async function loadVisits(){const d=await data("list",{from:$("myFrom")?.value||"",to:$("myTo")?.value||""});state.visits=d.visits||[];render()}
 function dateLabel(v){if(!v)return"";const d=new Date(v+"T00:00:00");return d.toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"})}
 function isUpcoming(v){return !!v.reminder_date}
 function render(){
@@ -89,7 +89,7 @@ function render(){
  const q=$("filter").value.trim().toLowerCase();
  const list=all.filter(v=>[v.house_number,v.location_name,v.association_name,v.notes,v.visit1,v.visit2].join(" ").toLowerCase().includes(q));
  $("reminderArea").innerHTML=reminders.length?'<div class="section-label">UPCOMING REMINDERS</div>'+reminders.slice(0,5).map(v=>'<div class="record" style="background:#fffaf0"><div class="recordtop"><div><div class="house">'+esc(v.house_number)+' · '+esc(v.location_name)+'</div><div class="subline">'+esc(v.association_name)+'</div></div><span class="reminder">↗ '+dateLabel(v.reminder_date)+'</span></div></div>').join(""):"";
- $("records").innerHTML=list.length?list.map(v=>'<article class="record"><div class="recordtop"><div><div class="house">'+esc(v.house_number)+'</div><div class="subline">'+esc(v.location_name)+' · '+esc(v.association_name)+'</div></div><div class="actions"><button class="mini" data-edit="'+v.id+'">EDIT</button><button class="mini" data-delete="'+v.id+'">DELETE</button></div></div><div class="chips">'+(v.visit1?'<span class="chip">Visit 1 · '+esc(v.visit1)+'</span>':'<span class="chip pending">Visit 1 pending</span>')+(v.visit2?'<span class="chip done">Visit 2 · '+esc(v.visit2)+'</span>':'<span class="chip pending">Visit 2 pending</span>')+'</div>'+(v.notes?'<div class="notes">'+esc(v.notes)+'</div>':'')+'<div class="recordfoot"><span class="reminder">'+(v.reminder_date?'Reminder · '+dateLabel(v.reminder_date):'No reminder set')+'</span><span class="subline">Updated '+new Date(v.updated_at).toLocaleDateString("en-IN")+'</span></div></article>').join(""):'<div class="empty">'+(q?'No matching houses found.':'No houses recorded yet. Add your first house using the form.')+'</div>';
+ $("records").innerHTML=list.length?list.map(v=>'<article class="record"><div class="recordtop"><div><div class="house">'+esc(v.house_number)+'</div><div class="subline">'+esc(v.location_name)+' · '+esc(v.association_name)+'</div></div><div class="actions"><button class="mini" data-edit="'+v.id+'">EDIT</button><button class="mini" data-delete="'+v.id+'">DELETE</button></div></div><div class="chips">'+(v.visit1?'<span class="chip">Visit 1 · '+esc(v.visit1)+'</span>':'<span class="chip pending">Visit 1 pending</span>')+(v.visit2?'<span class="chip done">Visit 2 · '+esc(v.visit2)+'</span>':'<span class="chip pending">Visit 2 pending</span>')+'</div>'+(v.notes?'<div class="notes">'+esc(v.notes)+'</div>':'')+'<div class="recordfoot"><span class="subline">Visit date · '+dateLabel((v.created_at||'').slice(0,10))+'</span><span class="reminder">'+(v.reminder_date?'Reminder · '+dateLabel(v.reminder_date):'No reminder set')+'</span><span class="subline">Updated '+new Date(v.updated_at).toLocaleDateString("en-IN")+'</span></div></article>').join(""):'<div class="empty">'+(q?'No matching houses found.':'No houses recorded yet. Add your first house using the form.')+'</div>';
  document.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>editVisit(b.dataset.edit));
  document.querySelectorAll("[data-delete]").forEach(b=>b.onclick=()=>deleteVisit(b.dataset.delete));
 }
@@ -107,8 +107,48 @@ async function saveVisit(e){e.preventDefault();if(!online()){setMsg("formMsg","I
  const d=await data("save",payload);const i=state.visits.findIndex(v=>v.id===d.visit.id);if(i>=0)state.visits[i]=d.visit;else state.visits.unshift(d.visit);
  clearEdit();setMsg("formMsg","House saved successfully.","success");render();
  }catch(x){setMsg("formMsg",x.message,"error")}finally{$("saveBtn").disabled=false}}
-$("loginForm").addEventListener("submit",signIn);$("visitForm").addEventListener("submit",saveVisit);$("logout").onclick=logout;$("filter").oninput=render;$("cancelEdit").onclick=clearEdit;
-$("newEntry").onclick=()=>{$("house").focus();$("entryPanel").scrollIntoView({behavior:"smooth",block:"start"})};
+
+async function loadAdminAssociates(){
+ try{const d=await data("admin_associates");state.adminAssociates=d.associates||[];$("associateOptions").innerHTML=state.adminAssociates.map(a=>'<option value="'+esc(a.name)+'"></option>').join("");setMsg("adminMsg",state.adminAssociates.length+" active associates available.","success")}
+ catch(e){setMsg("adminMsg",e.message,"error")}
+}
+async function loadAdminReport(){
+ const name=$("adminSearch").value.trim().toLowerCase();
+ const a=state.adminAssociates.find(x=>x.name.toLowerCase()===name);
+ if(!a){setMsg("adminMsg","Select an associate from the suggestions.","error");return}
+ if($("adminFrom").value&&$("adminTo").value&&$("adminFrom").value>$("adminTo").value){setMsg("adminMsg","From date cannot be after To date.","error");return}
+ $("adminLoad").disabled=true;setMsg("adminMsg","Loading associate report...");
+ try{const d=await data("admin_list",{associateId:a.id,from:$("adminFrom").value,to:$("adminTo").value});state.adminVisits=d.visits||[];state.adminSelected=a;renderAdminReport();$("adminImage").disabled=!state.adminVisits.length;setMsg("adminMsg",state.adminVisits.length+" records found for "+a.name+".","success")}
+ catch(e){setMsg("adminMsg",e.message,"error")}finally{$("adminLoad").disabled=false}
+}
+function renderAdminReport(){
+ const rows=state.adminVisits;
+ $("adminReport").innerHTML=rows.length?'<div class="section-label">'+esc(state.adminSelected.name)+' · '+rows.length+' HOUSES</div>'+rows.map(v=>'<article class="record"><div class="recordtop"><div><div class="house">'+esc(v.house_number)+'</div><div class="subline">'+esc(v.location_name)+' · '+esc(v.association_name)+'</div></div><span class="subline">'+dateLabel((v.created_at||"").slice(0,10))+'</span></div><div class="chips"><span class="chip">'+(v.visit1?'Visit 1 · '+esc(v.visit1):'Visit 1 pending')+'</span><span class="chip">'+(v.visit2?'Visit 2 · '+esc(v.visit2):'Visit 2 pending')+'</span></div>'+(v.notes?'<div class="notes">'+esc(v.notes)+'</div>':'')+(v.reminder_date?'<div class="reminder">Reminder · '+dateLabel(v.reminder_date)+'</div>':'')+'</article>').join(""):'<div class="empty">No visits found for this associate and date range.</div>';
+}
+function downloadAdminImage(){
+ if(!state.adminSelected||!state.adminVisits.length)return;
+ const rows=state.adminVisits,canvas=document.createElement("canvas"),ctx=canvas.getContext("2d");
+ const width=1200,pad=54,rowH=154,headerH=245;canvas.width=width;canvas.height=headerH+rows.length*rowH+pad;
+ ctx.fillStyle="#f4f6f9";ctx.fillRect(0,0,canvas.width,canvas.height);
+ ctx.fillStyle="#101d35";ctx.fillRect(0,0,width,190);
+ ctx.fillStyle="#d8b36a";ctx.font="bold 22px Arial";ctx.fillText("ALZA ORG",pad,52);
+ ctx.fillStyle="#ffffff";ctx.font="bold 34px Arial";ctx.fillText("RESIDENTIAL TERRITORY REPORT",pad,105);
+ ctx.font="20px Arial";ctx.fillText("Associate: "+state.adminSelected.name,pad,145);
+ ctx.font="16px Arial";ctx.fillText("Period: "+($("adminFrom").value||"All dates")+" to "+($("adminTo").value||"All dates")+"   |   Houses: "+rows.length,pad,174);
+ let y=headerH;
+ rows.forEach((v,i)=>{
+  ctx.fillStyle="#ffffff";ctx.fillRect(pad,y,width-pad*2,rowH-12);
+  ctx.fillStyle="#172338";ctx.font="bold 23px Arial";ctx.fillText("House "+v.house_number,pad+20,y+34);
+  ctx.font="17px Arial";ctx.fillStyle="#59677b";ctx.fillText(v.location_name+" · "+v.association_name,pad+20,y+62);
+  ctx.fillStyle="#1c3153";ctx.font="bold 16px Arial";ctx.fillText("Visit 1: "+(v.visit1||"Pending")+"     Visit 2: "+(v.visit2||"Pending"),pad+20,y+91);
+  ctx.fillStyle="#8a621e";ctx.font="15px Arial";ctx.fillText("Date: "+dateLabel((v.created_at||"").slice(0,10))+(v.reminder_date?"     Reminder: "+dateLabel(v.reminder_date):""),pad+20,y+119);
+  if(v.notes){ctx.fillStyle="#59677b";ctx.font="14px Arial";ctx.fillText("Notes: "+v.notes.slice(0,110),pad+20,y+140)}
+  y+=rowH;
+ });
+ const a=document.createElement("a");a.download="ALZA-ORG-"+state.adminSelected.name.replace(/[^a-z0-9]+/gi,"-")+"-residential-report.png";a.href=canvas.toDataURL("image/png");a.click();
+}
+\n$("loginForm").addEventListener("submit",signIn);$("visitForm").addEventListener("submit",saveVisit);$("logout").onclick=logout;$("filter").oninput=render;$("cancelEdit").onclick=clearEdit;
+$("adminLoad").onclick=loadAdminReport;$("adminImage").onclick=downloadAdminImage;\n$("associateMode").onclick=()=>{state.mode="associate";$("associateMode").classList.add("active");$("adminMode").classList.remove("active")};$("adminMode").onclick=()=>{state.mode="admin";$("adminMode").classList.add("active");$("associateMode").classList.remove("active")};\n$("applyMyDates").onclick=loadVisits;$("clearMyDates").onclick=()=>{$("myFrom").value="";$("myTo").value="";loadVisits()};\n$("newEntry").onclick=()=>{$("house").focus();$("entryPanel").scrollIntoView({behavior:"smooth",block:"start"})};
 window.addEventListener("online",()=>{$("net").textContent="● ONLINE";$("net").style.color="#a9e5ca"});
 window.addEventListener("offline",()=>{$("net").textContent="● OFFLINE";$("net").style.color="#ffb5b5"});
 async function start(){if(!online()){$("net").textContent="● OFFLINE";$("net").style.color="#ffb5b5"}

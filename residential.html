@@ -136,7 +136,7 @@ function renderAdminReport(){
 function downloadAdminImage(){
  if(!state.adminSelected||!state.adminVisits.length)return;
  const rows=state.adminVisits,canvas=document.createElement("canvas"),ctx=canvas.getContext("2d");
- const width=1200,pad=54,rowH=154,headerH=245;canvas.width=width;canvas.height=headerH+rows.length*rowH+pad;
+ const width=1200,pad=54,rowH=190,headerH=245;canvas.width=width;canvas.height=headerH+rows.length*rowH+pad;
  ctx.fillStyle="#f4f6f9";ctx.fillRect(0,0,canvas.width,canvas.height);
  ctx.fillStyle="#101d35";ctx.fillRect(0,0,width,190);
  ctx.fillStyle="#d8b36a";ctx.font="bold 22px Arial";ctx.fillText("ALZA ORG",pad,52);
@@ -150,7 +150,8 @@ function downloadAdminImage(){
   ctx.font="17px Arial";ctx.fillStyle="#59677b";ctx.fillText(v.location_name+" · "+v.association_name,pad+20,y+62);
   ctx.fillStyle="#1c3153";ctx.font="bold 16px Arial";ctx.fillText("Visit 1: "+(v.visit1||"Pending")+"     Visit 2: "+(v.visit2||"Pending"),pad+20,y+91);
   ctx.fillStyle="#8a621e";ctx.font="15px Arial";ctx.fillText("Date: "+dateLabel((v.created_at||"").slice(0,10))+(v.reminder_date?"     Reminder: "+dateLabel(v.reminder_date):""),pad+20,y+119);
-  if(v.notes){ctx.fillStyle="#59677b";ctx.font="14px Arial";ctx.fillText("Notes: "+v.notes.slice(0,110),pad+20,y+140)}
+  ctx.fillStyle="#59677b";ctx.font="14px Arial";ctx.fillText("Recorded: "+dateLabel(v.recorded_date)+"   Visit 1: "+dateLabel(v.visit1_date)+"   Visit 2: "+dateLabel(v.visit2_date),pad+20,y+145);
+  if(v.notes){ctx.fillStyle="#59677b";ctx.font="14px Arial";ctx.fillText("Notes: "+v.notes.slice(0,110),pad+20,y+169)}
   y+=rowH;
  });
  const a=document.createElement("a");a.download="ALZA-ORG-"+state.adminSelected.name.replace(/[^a-z0-9]+/gi,"-")+"-residential-report.png";a.href=canvas.toDataURL("image/png");a.click();
@@ -158,7 +159,7 @@ function downloadAdminImage(){
 
 $("loginForm").addEventListener("submit",signIn);$("visitForm").addEventListener("submit",saveVisit);$("logout").onclick=logout;$("filter").oninput=render;$("cancelEdit").onclick=clearEdit;
 $("adminLoad").onclick=loadAdminReport;$("adminImage").onclick=downloadAdminImage;
-$("associateMode").onclick=()=>{state.mode="associate";$("password").value="";$("associateMode").classList.add("active");$("adminMode").classList.remove("active");fillLoginOptions()};$("adminMode").onclick=()=>{state.mode="admin";$("password").value="";$("adminMode").classList.add("active");$("associateMode").classList.remove("active");fillLoginOptions()};$("loadTerritory").onclick=loadSelectedTerritory;$("saveTerritory").onclick=saveTerritory;
+$("associateMode").onclick=()=>{state.mode="associate";$("password").value="";$("associateMode").classList.add("active");$("adminMode").classList.remove("active");fillLoginOptions()};$("adminMode").onclick=()=>{state.mode="admin";$("password").value="";$("adminMode").classList.add("active");$("associateMode").classList.remove("active");fillLoginOptions()};$("loadTerritory").onclick=loadSelectedTerritory;$("saveTerritory").onclick=saveTerritory;$("savedTerritory").onchange=()=>{if(!$("savedTerritory").value){state.territoryId=null;setMsg("territoryMsg","New territory entry selected.","")}};
 $("applyMyDates").onclick=loadVisits;$("clearMyDates").onclick=()=>{$("myFrom").value="";$("myTo").value="";loadVisits()};
 $("newEntry").onclick=()=>{$("house").focus();$("entryPanel").scrollIntoView({behavior:"smooth",block:"start"})};
 window.addEventListener("online",()=>{$("net").textContent="● ONLINE";$("net").style.color="#a9e5ca"});

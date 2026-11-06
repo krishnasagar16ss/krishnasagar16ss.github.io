@@ -91,7 +91,7 @@ async function saveTerritory(){const location_name=$("location").value.trim(),as
 function dateLabel(v){if(!v)return"";const d=new Date(v+"T00:00:00");return d.toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"})}
 function isUpcoming(v){return !!v.reminder_date}
 function render(){
- const all=state.visits;const rework=all.filter(v=>v.visit1&&!v.visit2&&v.visit1!=="Not interested"&&v.visit1!=="Already doing");
+ const all=state.visits;const rework=all.filter(v=>v.visit1&&!v.visit2&&v.visit1!=="Not interested"&&v.visit1!=="Already doing"&&v.visit1!=="PPT"&&v.visit2!=="PPT");
  const reminders=all.filter(isUpcoming);
  $("totalCount").textContent=all.length;$("reworkCount").textContent=rework.length;$("reminderCount").textContent=reminders.length;$("recordCount").textContent=all.length+" records";
  const q=$("filter").value.trim().toLowerCase();
@@ -107,7 +107,7 @@ function editVisit(id){const v=state.visits.find(x=>x.id===id);if(!v)return;stat
 async function deleteVisit(id){if(!confirm("Delete this house record? This cannot be undone."))return;try{await data("delete",{id});state.visits=state.visits.filter(v=>v.id!==id);render()}catch(e){alert(e.message)}}
 async function saveVisit(e){e.preventDefault();if(!online()){setMsg("formMsg","Internet connection required. Your entry was not saved.","error");return}
  const visit1=$("visit1").value.trim(),visit2=$("visit2").value.trim();
- const allowed=["Busy","Locked","Come back","Call back","Not interested","Not available","Already doing"];
+ const allowed=["Busy","Locked","Come back","Call back","Not interested","Not available","Already doing","PPT"];
  if(visit1&&!allowed.includes(visit1)){setMsg("formMsg","Choose a Visit 1 response from the suggestions.","error");return}
  if(visit2&&!allowed.includes(visit2)){setMsg("formMsg","Choose a Visit 2 response from the suggestions.","error");return}
  $("saveBtn").disabled=true;setMsg("formMsg","Saving securely...");
@@ -148,7 +148,7 @@ function downloadAdminImage(){
   ctx.fillStyle="#ffffff";ctx.fillRect(pad,y,width-pad*2,rowH-12);
   ctx.fillStyle="#172338";ctx.font="bold 23px Arial";ctx.fillText("House "+v.house_number,pad+20,y+34);
   ctx.font="17px Arial";ctx.fillStyle="#59677b";ctx.fillText(v.location_name+" · "+v.association_name,pad+20,y+62);
-  ctx.fillStyle="#1c3153";ctx.font="bold 16px Arial";ctx.fillText("Visit 1: "+(v.visit1||"Pending")+"     Visit 2: "+(v.visit2||"Pending"),pad+20,y+91);
+  ctx.fillStyle="#1c3153";ctx.font="bold 16px Arial";ctx.fillText("Visit 1: "+(v.visit1||"Pending")+"     Visit 2: "+(v.visit2||"Pending")+(v.visit1==="PPT"||v.visit2==="PPT"?"     · PRESENTATION COMPLETED":""),pad+20,y+91);
   ctx.fillStyle="#8a621e";ctx.font="15px Arial";ctx.fillText("Recorded: "+dateLabel(v.recorded_date)+(v.reminder_date?"     Reminder: "+dateLabel(v.reminder_date):""),pad+20,y+119);
   ctx.fillStyle="#59677b";ctx.font="14px Arial";ctx.fillText("Visit 1: "+dateLabel(v.visit1_date)+" · "+(v.visit1_associate?.name||v.creator?.name||"")+"   Visit 2: "+dateLabel(v.visit2_date)+" · "+(v.visit2_associate?.name||""),pad+20,y+145);
   if(v.notes){ctx.fillStyle="#59677b";ctx.font="14px Arial";ctx.fillText("Notes: "+v.notes.slice(0,110),pad+20,y+169)}

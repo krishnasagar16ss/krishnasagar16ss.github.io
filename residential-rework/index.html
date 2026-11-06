@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101d35">
+<title>ALZA ORG | Residential Territory</title>
+<style>
+:root{--navy:#101d35;--navy2:#1c3153;--gold:#d8b36a;--bg:#f4f6f9;--ink:#172338;--muted:#718096;--line:#e5eaf1;--white:#fff;--green:#16845d;--red:#c84d55;--amber:#a56b16}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+button,input,textarea{font:inherit}button{cursor:pointer;border:0}.hidden{display:none!important}
+header{background:var(--navy);color:#fff;padding:15px max(18px,calc((100% - 1120px)/2));display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;z-index:5;box-shadow:0 4px 18px #101d3520}
+.brand{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:1.5px}.mark{width:36px;height:36px;border:1px solid #ffffff55;border-radius:11px;display:grid;place-items:center;color:var(--gold);font-size:19px}.brand small{display:block;font-size:10px;letter-spacing:2px;color:#b8c3d4;font-weight:600}
+.topright{display:flex;align-items:center;gap:10px}.online{font-size:11px;color:#a9e5ca;letter-spacing:1px}.btn{border-radius:10px;padding:11px 15px;font-weight:700;background:var(--navy);color:#fff}.btn.gold{background:var(--gold);color:#172338}.btn.ghost{background:#ffffff15;color:#fff;border:1px solid #ffffff2c}.btn.light{background:#edf1f6;color:var(--navy)}.btn.danger{background:#fff0f0;color:#b33e48}.btn:disabled{opacity:.5;cursor:not-allowed}
+main{max-width:1120px;margin:26px auto;padding:0 18px 50px}.welcome{display:flex;justify-content:space-between;align-items:flex-end;gap:15px;margin-bottom:20px}.eyebrow{font-size:11px;letter-spacing:1.8px;font-weight:800;color:#9a762e}.welcome h1{font-size:28px;margin:4px 0 0;letter-spacing:-.7px}.muted{color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin:18px 0}.stat{background:#fff;border:1px solid var(--line);border-radius:15px;padding:17px}.stat span{color:var(--muted);font-size:12px}.stat strong{display:block;font-size:27px;margin-top:4px;letter-spacing:-1px}
+.layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(310px,.85fr);gap:16px;align-items:start}.panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:19px;box-shadow:0 5px 18px #1d2c4407}.panel h2{font-size:17px;margin:0 0 4px}.hint{font-size:12px;color:var(--muted);margin:0 0 17px}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{min-width:0}.field.full{grid-column:1/-1}.field label{display:block;font-size:12px;font-weight:750;margin:0 0 6px;color:#39475c}.field input,.field textarea{width:100%;border:1px solid #dce3ec;border-radius:10px;padding:12px;background:#fff;color:var(--ink);outline:none}.field input:focus,.field textarea:focus{border-color:#b28d47;box-shadow:0 0 0 3px #d8b36a25}.field textarea{min-height:76px;resize:vertical}.field input::placeholder,.field textarea::placeholder{color:#a3adbb}
+.territory{background:#f8f6f1;border:1px solid #eee4d2;border-radius:13px;padding:14px;margin:15px 0}.territory-title{font-size:11px;letter-spacing:1.3px;color:#8b6c32;font-weight:850;margin-bottom:10px}
+.form-actions{display:flex;gap:9px;margin-top:15px;flex-wrap:wrap}.status{font-size:12px;margin-top:10px;min-height:18px}.success{color:var(--green)}.error{color:var(--red)}
+.listhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 12px}.listhead h2{margin:0}.search{width:100%;border:1px solid #dce3ec;border-radius:10px;padding:11px 12px;margin:4px 0 12px;outline:none}
+.record{border:1px solid var(--line);border-radius:13px;padding:13px;margin:9px 0}.recordtop{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.house{font-weight:800;font-size:15px}.subline{font-size:12px;color:var(--muted);margin-top:2px}.chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}.chip{font-size:11px;border-radius:20px;padding:5px 9px;background:#edf1f6;color:#445269}.chip.done{background:#e8f5ef;color:#18724f}.chip.pending{background:#fff4df;color:#94600e}.notes{font-size:12px;color:#566276;white-space:pre-wrap;margin:6px 0}.recordfoot{display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid #eff2f6;padding-top:9px;margin-top:8px}.reminder{font-size:11px;color:#93630f}.actions{display:flex;gap:6px}.mini{font-size:11px;padding:7px 9px;border-radius:8px;background:#eef1f6;color:#253650;font-weight:750}
+.empty{padding:25px 10px;text-align:center;color:var(--muted);font-size:13px}.section-label{font-size:11px;letter-spacing:1.3px;font-weight:800;color:#8b6c32;margin:17px 0 7px}
+.loginwrap{min-height:calc(100vh - 67px);display:grid;place-items:center;padding:25px 16px}.login{width:min(440px,100%);padding:27px}.login h1{font-size:26px;margin:15px 0 5px}.login p{color:var(--muted);font-size:13px}.login .field{margin:15px 0}.login .btn{width:100%;margin-top:8px}
+footer{text-align:center;padding:25px;color:#9aa4b2;font-size:11px;letter-spacing:.7px}
+@media(max-width:800px){.layout{grid-template-columns:1fr}.stats{gap:8px}.stat{padding:13px}.stat strong{font-size:23px}}
+@media(max-width:520px){header{padding:12px 14px}.brand{font-size:13px}.mark{width:32px;height:32px}.online{display:none}main{margin:18px auto;padding:0 12px 35px}.welcome h1{font-size:24px}.welcome{align-items:flex-start;flex-direction:column}.stats{grid-template-columns:repeat(3,1fr)}.stat span{font-size:10px}.stat strong{font-size:21px}.panel{padding:15px}.fields{grid-template-columns:1fr 1fr;gap:10px}.field input,.field textarea{padding:11px 10px;font-size:14px}.login{padding:23px}}
+</style>
+</head>
+<body>
+<header><div class="brand"><div class="mark">A</div><div>ALZA ORG<small>RESIDENTIAL TERRITORY</small></div></div><div class="topright"><span id="net" class="online">● ONLINE</span><button id="logout" class="btn ghost hidden">LOG OUT</button></div></header>
+<section id="loginView" class="loginwrap"><div class="panel login"><div class="eyebrow">PEOPLE • PURPOSE • PERFORMANCE</div><h1>Associate sign in</h1><p>Use the same associate name and password you use for ALZA ORG TMC Manager.</p><form id="loginForm"><div class="field"><label>ASSOCIATE NAME</label><input id="username" autocomplete="username" required placeholder="Enter your registered name"></div><div class="field"><label>PASSWORD</label><input id="password" type="password" autocomplete="current-password" required placeholder="Your TMC password"></div><button id="loginBtn" class="btn gold" type="submit">SIGN IN</button><div id="loginMsg" class="status"></div></form></div></section>
+<main id="appView" class="hidden">
+<div class="welcome"><div><div class="eyebrow">YOUR FIELD WORKSPACE</div><h1>Welcome, <span id="associateName">Associate</span></h1><div class="muted" style="font-size:13px">Track every house visit and plan your next follow-up.</div></div><button id="newEntry" class="btn light">＋ NEW HOUSE</button></div>
+<div class="stats"><div class="stat"><span>HOUSES RECORDED</span><strong id="totalCount">0</strong></div><div class="stat"><span>REWORK REQUIRED</span><strong id="reworkCount">0</strong></div><div class="stat"><span>REMINDERS</span><strong id="reminderCount">0</strong></div></div>
+<div class="layout">
+<section class="panel" id="entryPanel"><h2 id="formTitle">Add house visit</h2><p class="hint">Enter territory details once, then add each house below.</p>
+<form id="visitForm">
+<div class="territory"><div class="territory-title">TERRITORY DETAILS</div><div class="fields">
+<div class="field"><label>LOCATION NAME *</label><input id="location" required placeholder="e.g. Kowdiar"></div>
+<div class="field"><label>RESIDENTIAL ASSOCIATION *</label><input id="association" required placeholder="Association name"></div>
+</div></div>
+<div class="fields">
+<div class="field"><label>HOUSE NUMBER *</label><input id="house" required placeholder="e.g. A-102"></div>
+<div class="field"><label>VISIT 1 RESPONSE</label><input id="visit1" list="responses" autocomplete="off" placeholder="Search / select"></div>
+<div class="field"><label>VISIT 2 RESPONSE</label><input id="visit2" list="responses" autocomplete="off" placeholder="Search / select"></div>
+<div class="field"><label>REMINDER DATE</label><input id="reminder" type="date"></div>
+<div class="field full"><label>NOTES</label><textarea id="notes" placeholder="Details to remember for the next follow-up..."></textarea></div>
+</div>
+<datalist id="responses"><option value="Busy"><option value="Locked"><option value="Come back"><option value="Call back"><option value="Not interested"><option value="Not available"><option value="Already doing"></datalist>
+<div class="form-actions"><button id="saveBtn" class="btn gold" type="submit">SAVE HOUSE</button><button id="cancelEdit" class="btn light hidden" type="button">CANCEL EDIT</button></div><div id="formMsg" class="status"></div>
+</form></section>
+<section class="panel"><div class="listhead"><div><h2>My houses</h2><div class="hint" style="margin:3px 0 0">Your saved territory visit history</div></div><span class="chip" id="recordCount">0 records</span></div>
+<input id="filter" class="search" placeholder="Search house, location or association...">
+<div id="reminderArea"></div><div id="records"></div>
+</section></div>
+</main>
+<footer>ALZA ORG · PEOPLE • PURPOSE • PERFORMANCE · ONLINE APPLICATION</footer>
+<script>
+const SUPABASE_URL="https://chwnbnekgqlbdqoenazn.supabase.co";
+const SUPABASE_KEY="sb_publishable_KJYZ7oaCpzGS4yfupnNp-A_1gOUzwaN";
+const TMC_API=SUPABASE_URL+"/functions/v1/tmc-api";
+const DATA_API=SUPABASE_URL+"/functions/v1/residential-api";
+const $=id=>document.getElementById(id);
+const state={token:sessionStorage.getItem("residential_token")||"",associate:JSON.parse(sessionStorage.getItem("residential_associate")||"null"),visits:[],editing:null};
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function online(){return navigator.onLine}
+function setMsg(id,msg,type=""){ $(id).textContent=msg;$(id).className="status "+type}
+async function request(url,action,payload={},token=""){
+ const r=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json","apikey":SUPABASE_KEY,...(token?{"x-app-session":token}:{})},body:JSON.stringify({action,...payload})});
+ const d=await r.json().catch(()=>({error:"Invalid server response"}));
+ if(!r.ok||d.error)throw new Error(d.error||"Request failed");return d;
+}
+async function data(action,payload={}){if(!online())throw new Error("Internet connection required. This app works online only.");return request(DATA_API,action,payload,state.token)}
+function showLogin(){ $("loginView").classList.remove("hidden");$("appView").classList.add("hidden");$("logout").classList.add("hidden")}
+function showApp(){ $("loginView").classList.add("hidden");$("appView").classList.remove("hidden");$("logout").classList.remove("hidden");$("associateName").textContent=state.associate?.name||"Associate"}
+async function signIn(e){e.preventDefault();if(!online()){setMsg("loginMsg","Connect to the internet to sign in.","error");return}
+ $("loginBtn").disabled=true;setMsg("loginMsg","Checking TMC credentials...");
+ try{const d=await request(TMC_API,"login",{username:$("username").value.trim(),password:$("password").value});
+ state.token=d.token;state.associate=d.associate;sessionStorage.setItem("residential_token",state.token);sessionStorage.setItem("residential_associate",JSON.stringify(state.associate));showApp();await loadVisits();
+ }catch(x){setMsg("loginMsg",x.message,"error")}finally{$("loginBtn").disabled=false}}
+async function logout(){try{await request(TMC_API,"logout",{},state.token)}catch{}state.token="";state.associate=null;state.visits=[];state.editing=null;sessionStorage.removeItem("residential_token");sessionStorage.removeItem("residential_associate");showLogin()}
+async function loadVisits(){const d=await data("list");state.visits=d.visits||[];render()}
+function dateLabel(v){if(!v)return"";const d=new Date(v+"T00:00:00");return d.toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"})}
+function isUpcoming(v){return v.reminder_date && v.reminder_date>=new Date().toLocaleDateString("en-CA",{timeZone:"Asia/Kolkata"})}
+function render(){
+ const all=state.visits;const rework=all.filter(v=>v.visit1&&!v.visit2&&v.visit1!=="Not interested"&&v.visit1!=="Already doing");
+ const reminders=all.filter(isUpcoming);
+ $("totalCount").textContent=all.length;$("reworkCount").textContent=rework.length;$("reminderCount").textContent=reminders.length;$("recordCount").textContent=all.length+" records";
+ const q=$("filter").value.trim().toLowerCase();
+ const list=all.filter(v=>[v.house_number,v.location_name,v.association_name,v.notes,v.visit1,v.visit2].join(" ").toLowerCase().includes(q));
+ $("reminderArea").innerHTML=reminders.length?'<div class="section-label">UPCOMING REMINDERS</div>'+reminders.slice(0,5).map(v=>'<div class="record" style="background:#fffaf0"><div class="recordtop"><div><div class="house">'+esc(v.house_number)+' · '+esc(v.location_name)+'</div><div class="subline">'+esc(v.association_name)+'</div></div><span class="reminder">↗ '+dateLabel(v.reminder_date)+'</span></div></div>').join(""):"";
+ $("records").innerHTML=list.length?list.map(v=>'<article class="record"><div class="recordtop"><div><div class="house">'+esc(v.house_number)+'</div><div class="subline">'+esc(v.location_name)+' · '+esc(v.association_name)+'</div></div><div class="actions"><button class="mini" data-edit="'+v.id+'">EDIT</button><button class="mini" data-delete="'+v.id+'">DELETE</button></div></div><div class="chips">'+(v.visit1?'<span class="chip">Visit 1 · '+esc(v.visit1)+'</span>':'<span class="chip pending">Visit 1 pending</span>')+(v.visit2?'<span class="chip done">Visit 2 · '+esc(v.visit2)+'</span>':'<span class="chip pending">Visit 2 pending</span>')+'</div>'+(v.notes?'<div class="notes">'+esc(v.notes)+'</div>':'')+'<div class="recordfoot"><span class="reminder">'+(v.reminder_date?'Reminder · '+dateLabel(v.reminder_date):'No reminder set')+'</span><span class="subline">Updated '+new Date(v.updated_at).toLocaleDateString("en-IN")+'</span></div></article>').join(""):'<div class="empty">'+(q?'No matching houses found.':'No houses recorded yet. Add your first house using the form.')+'</div>';
+ document.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>editVisit(b.dataset.edit));
+ document.querySelectorAll("[data-delete]").forEach(b=>b.onclick=()=>deleteVisit(b.dataset.delete));
+}
+function resetHouseFields(){ $("house").value="";$("visit1").value="";$("visit2").value="";$("notes").value="";$("reminder").value=""; }
+function clearEdit(){state.editing=null;$("formTitle").textContent="Add house visit";$("saveBtn").textContent="SAVE HOUSE";$("cancelEdit").classList.add("hidden");resetHouseFields()}
+function editVisit(id){const v=state.visits.find(x=>x.id===id);if(!v)return;state.editing=id;$("location").value=v.location_name;$("association").value=v.association_name;$("house").value=v.house_number;$("visit1").value=v.visit1||"";$("visit2").value=v.visit2||"";$("notes").value=v.notes||"";$("reminder").value=v.reminder_date||"";$("formTitle").textContent="Edit house visit";$("saveBtn").textContent="UPDATE HOUSE";$("cancelEdit").classList.remove("hidden");$("entryPanel").scrollIntoView({behavior:"smooth",block:"start"})}
+async function deleteVisit(id){if(!confirm("Delete this house record? This cannot be undone."))return;try{await data("delete",{id});state.visits=state.visits.filter(v=>v.id!==id);render()}catch(e){alert(e.message)}}
+async function saveVisit(e){e.preventDefault();if(!online()){setMsg("formMsg","Internet connection required. Your entry was not saved.","error");return}
+ const visit1=$("visit1").value.trim(),visit2=$("visit2").value.trim();
+ const allowed=["Busy","Locked","Come back","Call back","Not interested","Not available","Already doing"];
+ if(visit1&&!allowed.includes(visit1)){setMsg("formMsg","Choose a Visit 1 response from the suggestions.","error");return}
+ if(visit2&&!allowed.includes(visit2)){setMsg("formMsg","Choose a Visit 2 response from the suggestions.","error");return}
+ $("saveBtn").disabled=true;setMsg("formMsg","Saving securely...");
+ try{const payload={id:state.editing||undefined,location_name:$("location").value,association_name:$("association").value,house_number:$("house").value,visit1:visit1||null,visit2:visit2||null,notes:$("notes").value,reminder_date:$("reminder").value||null};
+ const d=await data("save",payload);const i=state.visits.findIndex(v=>v.id===d.visit.id);if(i>=0)state.visits[i]=d.visit;else state.visits.unshift(d.visit);
+ clearEdit();setMsg("formMsg","House saved successfully.","success");render();
+ }catch(x){setMsg("formMsg",x.message,"error")}finally{$("saveBtn").disabled=false}}
+$("loginForm").addEventListener("submit",signIn);$("visitForm").addEventListener("submit",saveVisit);$("logout").onclick=logout;$("filter").oninput=render;$("cancelEdit").onclick=clearEdit;
+$("newEntry").onclick=()=>{$("house").focus();$("entryPanel").scrollIntoView({behavior:"smooth",block:"start"})};
+window.addEventListener("online",()=>{$("net").textContent="● ONLINE";$("net").style.color="#a9e5ca"});
+window.addEventListener("offline",()=>{$("net").textContent="● OFFLINE";$("net").style.color="#ffb5b5"});
+async function start(){if(!online()){$("net").textContent="● OFFLINE";$("net").style.color="#ffb5b5"}
+ if(state.token&&state.associate){showApp();try{await loadVisits()}catch(e){if(e.message.includes("SESSION_EXPIRED"))logout();else setMsg("formMsg",e.message,"error")}}
+ else showLogin()}
+start();
+</script>
+</body></html>

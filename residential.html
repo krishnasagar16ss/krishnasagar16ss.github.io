@@ -57,6 +57,7 @@ footer{text-align:center;padding:25px;color:#9aa4b2;font-size:11px;letter-spacin
 </main>
 <footer>ALZA ORG · PEOPLE • PURPOSE • PERFORMANCE · ONLINE APPLICATION</footer>
 <script>
+
 const SUPABASE_URL="https://chwnbnekgqlbdqoenazn.supabase.co";
 const SUPABASE_KEY="sb_publishable_KJYZ7oaCpzGS4yfupnNp-A_1gOUzwaN";
 const TMC_API=SUPABASE_URL+"/functions/v1/tmc-api";
@@ -101,11 +102,35 @@ function fillLoginOptions(){
  if(!state.loginComboBound){bindCombo("username","usernameMenu",()=>((state.mode==="admin"?state.loginOptions.admins:state.loginOptions.associates)||[]).map(a=>({label:a.name,value:a.id})));state.loginComboBound=true}
 }
 function showApp(){ $("loginView").classList.add("hidden");$("appView").classList.remove("hidden");$("logout").classList.remove("hidden");$("associateName").textContent=state.associate?.name||"Associate"}
-async function signIn(e){e.preventDefault();if(!online()){setMsg("loginMsg","Connect to the internet to sign in.","error");return}
- $("loginBtn").disabled=true;setMsg("loginMsg","Checking TMC credentials...");
- try{const selected=$("username").value.trim();if(!selected)throw new Error("Enter your TMC name.");const d=await request(TMC_API,"login",{username:selected,password:$("password").value});if(state.mode==="admin"&&!d.isAdmin)throw new Error("This account is not registered as an administrator.");if($("rememberName").checked)localStorage.setItem("residential_login_"+state.mode,selected);else localStorage.removeItem("residential_login_"+state.mode);
- state.token=d.token;state.associate=d.associate;sessionStorage.setItem("residential_is_admin",String(!!d.isAdmin));sessionStorage.setItem("residential_token",state.token);sessionStorage.setItem("residential_associate",JSON.stringify(state.associate));showApp();if(d.isAdmin){$("adminPanel").classList.remove("hidden");$("associateWorkspace").classList.add("hidden");await loadAdminAssociates()}else{$("adminPanel").classList.add("hidden");$("associateWorkspace").classList.remove("hidden");refreshToday();await loadTerritories();await loadVisits()}
- }catch(x){setMsg("loginMsg",x.message,"error")}finally{$("loginBtn").disabled=false}}
+async function signIn(e){
+ e.preventDefault();
+ $("loginMsg").textContent="";$("loginMsg").className="status";
+ if(!navigator.onLine){setMsg("loginMsg","Internet connection required. This application is online-only.","error");return}
+ const username=$("username").value.trim(),password=$("password").value;
+ if(!username||!password){setMsg("loginMsg","Enter your TMC name and password.","error");return}
+ const button=$("loginBtn");button.disabled=true;button.textContent="VERIFYING…";
+ setMsg("loginMsg","Verifying directly with ALZA ORG TMC Manager…");
+ try{
+  const result=await request(TMC_API,"login",{username,password});
+  if(!result||!result.token||!result.associate||!result.associate.id)throw new Error("TMC returned an incomplete login response. Please contact the administrator.");
+  if(state.mode==="admin"&&!result.isAdmin)throw new Error("This TMC account does not have administrator access.");
+  state.token=result.token;state.associate=result.associate;
+  sessionStorage.setItem("residential_is_admin",String(!!result.isAdmin));
+  sessionStorage.setItem("residential_token",result.token);
+  sessionStorage.setItem("residential_associate",JSON.stringify(result.associate));
+  if($("rememberName").checked)localStorage.setItem("residential_login_"+state.mode,result.associate.name);
+  else localStorage.removeItem("residential_login_"+state.mode);
+  showApp();
+  if(result.isAdmin&&state.mode==="admin"){
+   $("adminPanel").classList.remove("hidden");$("associateWorkspace").classList.add("hidden");await loadAdminAssociates();
+  }else{
+   $("adminPanel").classList.add("hidden");$("associateWorkspace").classList.remove("hidden");refreshToday();await loadTerritories();await loadVisits();
+  }
+ }catch(error){
+  const message=String(error?.message||"Login failed.");
+  setMsg("loginMsg",message==="INVALID_LOGIN"?"Incorrect TMC name or password.":message,"error");
+ }finally{button.disabled=false;button.textContent="SIGN IN"}
+}
 async function logout(){try{await request(TMC_API,"logout",{},state.token)}catch{}$("adminPanel").classList.add("hidden");$("associateWorkspace").classList.remove("hidden");state.token="";state.associate=null;sessionStorage.removeItem("residential_is_admin");state.visits=[];state.editing=null;sessionStorage.removeItem("residential_token");sessionStorage.removeItem("residential_associate");showLogin()}
 async function loadVisits(){const d=await data("list",{from:$("myFrom")?.value||"",to:$("myTo")?.value||""});state.visits=d.visits||[];render()}
 async function loadTerritories(){const d=await data("territories");state.territories=d.territories||[];bindTerritoryCombos()}
@@ -209,5 +234,6 @@ async function start(){if(!online()){$("net").textContent="● OFFLINE";$("net")
  if(state.token&&state.associate){showApp();try{if(sessionStorage.getItem("residential_is_admin")==="true"){$("adminPanel").classList.remove("hidden");$("associateWorkspace").classList.add("hidden");await loadAdminAssociates()}else{refreshToday();await loadTerritories();await loadVisits()}}catch(e){if(e.message.includes("SESSION_EXPIRED"))logout();else setMsg("formMsg",e.message,"error")}}
  else{showLogin();loadLoginOptions();refreshToday()}}
 start();
+
 </script>
 </body></html>

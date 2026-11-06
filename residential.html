@@ -76,9 +76,9 @@ function showApp(){ $("loginView").classList.add("hidden");$("appView").classLis
 async function signIn(e){e.preventDefault();if(!online()){setMsg("loginMsg","Connect to the internet to sign in.","error");return}
  $("loginBtn").disabled=true;setMsg("loginMsg","Checking TMC credentials...");
  try{const d=await request(TMC_API,"login",{username:$("username").value.trim(),password:$("password").value});
- if(state.mode==="admin"&&!d.isAdmin)throw new Error("This TMC account does not have administrator access.");state.token=d.token;state.associate=d.associate;sessionStorage.setItem("residential_token",state.token);sessionStorage.setItem("residential_associate",JSON.stringify(state.associate));showApp();if(d.isAdmin){$("adminPanel").classList.remove("hidden");$("associateWorkspace").classList.add("hidden");await loadAdminAssociates()}else{$("adminPanel").classList.add("hidden");$("associateWorkspace").classList.remove("hidden");await loadVisits()}
+ if(state.mode==="admin"&&!d.isAdmin)throw new Error("This TMC account does not have administrator access.");state.token=d.token;state.associate=d.associate;sessionStorage.setItem("residential_is_admin",String(!!d.isAdmin));sessionStorage.setItem("residential_token",state.token);sessionStorage.setItem("residential_associate",JSON.stringify(state.associate));showApp();if(d.isAdmin){$("adminPanel").classList.remove("hidden");$("associateWorkspace").classList.add("hidden");await loadAdminAssociates()}else{$("adminPanel").classList.add("hidden");$("associateWorkspace").classList.remove("hidden");await loadVisits()}
  }catch(x){setMsg("loginMsg",x.message,"error")}finally{$("loginBtn").disabled=false}}
-async function logout(){try{await request(TMC_API,"logout",{},state.token)}catch{}$("adminPanel").classList.add("hidden");$("associateWorkspace").classList.remove("hidden");state.token="";state.associate=null;state.visits=[];state.editing=null;sessionStorage.removeItem("residential_token");sessionStorage.removeItem("residential_associate");showLogin()}
+async function logout(){try{await request(TMC_API,"logout",{},state.token)}catch{}$("adminPanel").classList.add("hidden");$("associateWorkspace").classList.remove("hidden");state.token="";state.associate=null;sessionStorage.removeItem("residential_is_admin");state.visits=[];state.editing=null;sessionStorage.removeItem("residential_token");sessionStorage.removeItem("residential_associate");showLogin()}
 async function loadVisits(){const d=await data("list",{from:$("myFrom")?.value||"",to:$("myTo")?.value||""});state.visits=d.visits||[];render()}
 function dateLabel(v){if(!v)return"";const d=new Date(v+"T00:00:00");return d.toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"})}
 function isUpcoming(v){return !!v.reminder_date}
@@ -152,7 +152,7 @@ $("adminLoad").onclick=loadAdminReport;$("adminImage").onclick=downloadAdminImag
 window.addEventListener("online",()=>{$("net").textContent="● ONLINE";$("net").style.color="#a9e5ca"});
 window.addEventListener("offline",()=>{$("net").textContent="● OFFLINE";$("net").style.color="#ffb5b5"});
 async function start(){if(!online()){$("net").textContent="● OFFLINE";$("net").style.color="#ffb5b5"}
- if(state.token&&state.associate){showApp();try{await loadVisits()}catch(e){if(e.message.includes("SESSION_EXPIRED"))logout();else setMsg("formMsg",e.message,"error")}}
+ if(state.token&&state.associate){showApp();try{if(sessionStorage.getItem("residential_is_admin")==="true"){$("adminPanel").classList.remove("hidden");$("associateWorkspace").classList.add("hidden");await loadAdminAssociates()}else{await loadVisits()}}catch(e){if(e.message.includes("SESSION_EXPIRED"))logout();else setMsg("formMsg",e.message,"error")}}
  else showLogin()}
 start();
 </script>

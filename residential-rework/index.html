@@ -81,7 +81,7 @@ async function signIn(e){e.preventDefault();if(!online()){setMsg("loginMsg","Con
 async function logout(){try{await request(TMC_API,"logout",{},state.token)}catch{}state.token="";state.associate=null;state.visits=[];state.editing=null;sessionStorage.removeItem("residential_token");sessionStorage.removeItem("residential_associate");showLogin()}
 async function loadVisits(){const d=await data("list");state.visits=d.visits||[];render()}
 function dateLabel(v){if(!v)return"";const d=new Date(v+"T00:00:00");return d.toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"})}
-function isUpcoming(v){return v.reminder_date && v.reminder_date>=new Date().toLocaleDateString("en-CA",{timeZone:"Asia/Kolkata"})}
+function isUpcoming(v){return !!v.reminder_date}
 function render(){
  const all=state.visits;const rework=all.filter(v=>v.visit1&&!v.visit2&&v.visit1!=="Not interested"&&v.visit1!=="Already doing");
  const reminders=all.filter(isUpcoming);

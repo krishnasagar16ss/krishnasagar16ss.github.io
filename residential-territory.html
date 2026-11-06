@@ -112,7 +112,7 @@ async function loadReminders(date=$("reminderViewDate").value||today()){
  $("reminderBadge").textContent=String(rows.length);
  $("reminderCount").textContent=String(rows.length);
  $("reminderList").innerHTML=rows.length?rows.map(v=>'<article class="reminder-item"><div class="row between"><strong>HOUSE '+esc(v.house_number)+'</strong><span class="pill">'+dateLabel(v.reminder_date)+'</span></div><small>'+esc(v.location_name)+' / '+esc(v.association_name)+'</small><p>Visit 1 · '+responsePill(v.visit1)+' &nbsp; Visit 2 · '+responsePill(v.visit2)+'</p>'+(v.notes?'<small>Notes: '+esc(v.notes)+'</small>':'')+'<div class="row"><button class="btn light" type="button" data-reminder-edit="'+v.id+'">OPEN RECORD</button></div></article>').join(''):'<div class="empty">No reminders scheduled for '+dateLabel(date)+'.</div>';
- $("reminderList").querySelectorAll("[data-reminder-edit]").forEach(b=>b.onclick=()=>{const v=rows.find(x=>x.id===b.dataset.reminderEdit);if(v){editVisit(v.id);$("reminderPanel").classList.add("hidden");$("entryPanel").scrollIntoView({behavior:"smooth"})}});
+ $("reminderList").querySelectorAll("[data-reminder-edit]").forEach(b=>b.onclick=()=>{const v=rows.find(x=>x.id===b.dataset.reminderEdit);if(v){if(!state.visits.some(x=>x.id===v.id))state.visits.push(v);editVisit(v.id);$("reminderPanel").classList.add("hidden");$("entryPanel").scrollIntoView({behavior:"smooth"})}});
 }
 async function openReminders(){ $("reminderPanel").classList.remove("hidden");$("reminderViewDate").value=today();await loadReminders(today());$("reminderPanel").scrollIntoView({behavior:"smooth",block:"start"});}
 

@@ -27,8 +27,8 @@
 <div class="field"><label>Creative direction</label><select id="style"><option>Cinematic, dramatic lighting</option><option>Luxury black and gold</option><option>Bold competition energy</option><option>Minimal premium corporate</option><option>Creative freedom – choose best direction</option></select></div>
 <div class="field"><label>People photographs / references</label><div class="drop">Upload original photographs. Face identity should be preserved.<br><input id="photos" type="file" accept="image/png,image/jpeg,image/webp" multiple></div><div id="photolist" class="note"></div></div>
 <div class="field"><label>Official ALZA ORG logo</label><div class="drop">Upload the exact official logo artwork. It will be stored as a fixed brand asset, not recreated by AI.<br><input id="logo" type="file" accept="image/png,image/jpeg,image/webp"></div><div id="logostatus" class="note">No logo uploaded to this workspace yet.</div></div>
-<div class="row"><button id="save" class="btn">Save poster brief</button><button id="generate" class="btn secondary">AI generation · coming next</button></div><div id="savemsg" class="status"></div>
-<p class="note">This first build saves briefs and uploaded assets securely. The image-generation engine and final export pipeline are the next integration stage.</p>
+<div class="row"><button id="save" class="btn">Save poster brief</button><button id="generate" class="btn secondary">Prepare for ChatGPT</button></div><div id="savemsg" class="status"></div><div id="promptPanel" class="field hide"><label>Ready-to-use ChatGPT poster prompt</label><textarea id="chatPrompt" readonly style="min-height:230px"></textarea><div class="row"><button id="copyPrompt" class="btn">Copy prompt</button><span class="note">Then open ChatGPT, paste it, and attach your original photos and official logo.</span></div><div id="promptMsg" class="status"></div></div>
+<p class="note">Free workflow: save your brief here, prepare a prompt, then use ChatGPT to generate the poster. Attach the original photos and official logo in the ChatGPT conversation so they can be used as references.</p>
 </section>
 <aside class="panel"><h2>My creations</h2><p class="sub">Your saved poster briefs and recent work.</p><div id="projects" class="list"><div class="item"><small>Loading your workspace…</small></div></div><div style="height:22px"></div><h2>Brand standards</h2><div class="preview"><div><b>ALZA ORG</b><small>PEOPLE • PURPOSE • PERFORMANCE</small></div></div><p class="note" style="margin-top:10px">The official supplied logo must remain unchanged. Use AI for artwork and atmosphere; keep logo and final typography as controlled design elements.</p><div style="height:16px"></div><h2>Studio roadmap</h2><div class="list"><div class="item"><strong>01 · Workspace foundation</strong><small>Authentication, private storage and poster briefs</small></div><div class="item"><strong>02 · AI creative engine</strong><small>Secure image generation and revision workflow</small></div><div class="item"><strong>03 · Precision finishing</strong><small>Logo placement, readable typography and export</small></div></div></aside>
 </div></main><footer class="foot">ALZA ORG · POSTER STUDIO · PRIVATE CREATIVE WORKSPACE</footer></div>
@@ -50,7 +50,29 @@ $("photos").onchange=()=>msg("photolist",$("photos").files.length+" photo(s) sel
 $("logo").onchange=()=>msg("logostatus",$("logo").files[0]?.name||"No logo selected");
 async function upload(file,type,projectId){const ext=(file.name.split(".").pop()||"jpg").toLowerCase().replace(/[^a-z0-9]/g,"");const path=currentUser.id+"/"+(projectId||"brand")+"/"+crypto.randomUUID()+"."+ext;const {error}=await sb.storage.from("alza-poster-studio").upload(path,file,{contentType:file.type,upsert:false});if(error)throw error;const {error:dbErr}=await sb.from("poster_assets").insert({owner_id:currentUser.id,project_id:projectId||null,asset_type:type,storage_path:path,original_filename:file.name,mime_type:file.type});if(dbErr)throw dbErr;return path}
 $("save").onclick=async()=>{if(!currentUser)return;const title=$("title").value.trim()||"Untitled poster";const brief=$("brief").value.trim();if(!brief){msg("savemsg","Please enter the poster details first.");return}const btn=$("save");btn.disabled=true;msg("savemsg","Saving your brief and assets…");try{const {data,error}=await sb.from("poster_projects").insert({owner_id:currentUser.id,title,category,brief:brief+"\n\nCreative direction: "+$("style").value,status:"draft"}).select().single();if(error)throw error;for(const f of $("photos").files)await upload(f,"person_photo",data.id);if($("logo").files[0]){await upload($("logo").files[0],"brand_logo",null);msg("logostatus","Official logo stored in your private brand assets.")}msg("savemsg","Saved successfully. Your brief and uploaded assets are private to your account.");$("photos").value="";$("logo").value="";$("photolist").textContent="";loadProjects()}catch(e){msg("savemsg","Could not save: "+e.message)}finally{btn.disabled=false}};
-$("generate").onclick=()=>alert("The AI generation engine is the next development stage. Your brief and asset workflow are now being prepared; no image has been generated yet.");
+$("generate").onclick=()=>{const title=$("title").value.trim()||"ALZA ORG poster";const brief=$("brief").value.trim();if(!brief){msg("savemsg","Add the poster details first, then prepare the ChatGPT prompt.");return}const files=[...$("photos").files].map(f=>f.name);const logo=$("logo").files[0]?.name||"Official ALZA ORG logo (attach the original artwork)";const prompt=`Create a premium, cinematic ALZA ORG poster.
+
+POSTER CATEGORY: ${category.replaceAll("_"," ")}
+TITLE / SUBJECT: ${title}
+EXACT CONTENT TO INCLUDE:
+${brief}
+
+CREATIVE DIRECTION: ${$("style").value}
+
+REFERENCE ASSETS TO ATTACH:
+- People photographs: ${files.length?files.join(", "):"No people photos selected yet"}
+- Official logo: ${logo}
+
+NON-NEGOTIABLE ALZA ORG BRAND RULES:
+- Use the exact official ALZA ORG logo artwork supplied as an attachment. Do not redraw, recreate, approximate, crop into a different composition, recolour, or alter the logo.
+- Preserve the identity and facial features of every person in the supplied photographs. Do not beautify, reshape, or replace faces.
+- Keep all names, scores, dates, venues, amounts and wording exactly as supplied. Do not invent details.
+- Use strong professional typography, clear hierarchy, premium cinematic art direction and polished composition.
+- Keep text legible and correctly spelled. If exact text cannot be rendered reliably in the image, leave clean space for precise typography to be added separately.
+- Deliver a finished vertical social-media poster unless the brief specifies another format.
+`;
+$("chatPrompt").value=prompt;$("promptPanel").classList.remove("hide");msg("promptMsg","Prompt prepared. Attach the original photos and official logo in ChatGPT before generating.");$("promptPanel").scrollIntoView({behavior:"smooth",block:"center"});};
+$("copyPrompt").onclick=async()=>{try{await navigator.clipboard.writeText($("chatPrompt").value);msg("promptMsg","Copied. Open ChatGPT, paste the prompt, and attach your original assets.");}catch(e){$("chatPrompt").focus();$("chatPrompt").select();msg("promptMsg","Select and copy the text above, then paste it into ChatGPT.");}};
 async function loadProjects(){const {data,error}=await sb.from("poster_projects").select("id,title,category,status,created_at").order("created_at",{ascending:false}).limit(20);if(error){$("projects").innerHTML='<div class="item"><small>'+safe(error.message)+'</small></div>';return}if(!data?.length){$("projects").innerHTML='<div class="item"><small>No saved posters yet. Your first brief will appear here.</small></div>';return}$("projects").innerHTML=data.map(p=>'<div class="item"><strong>'+safe(p.title)+'</strong><small>'+safe(p.category.replaceAll("_"," "))+' · '+safe(p.status)+' · '+new Date(p.created_at).toLocaleDateString()+'</small></div>').join("")}
 /* Studio opens after PIN verification. */
 </script></body></html>

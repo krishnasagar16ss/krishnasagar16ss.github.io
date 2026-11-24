@@ -11,7 +11,7 @@
 </style></head>
 <body><div class="wrap">
 <header class="top"><div class="brand"><div class="brandmark">A</div><div><strong>ALZA ORG</strong><small>PEOPLE • PURPOSE • PERFORMANCE</small></div></div><div class="row"><span class="pill">POSTER STUDIO</span><span class="pill">NO LOGIN REQUIRED</span></div></header>
-<section id="starting" class="auth panel"><div class="eyebrow">Private creative workspace</div><h1 style="font-size:28px;margin:8px 0">Preparing your studio…</h1><p id="startupmsg" class="sub">Opening your private workspace.</p></section>
+<section id="pinGate" class="auth panel"><div class="eyebrow">Private creative workspace</div><h1 style="font-size:30px;margin:8px 0">Welcome to Poster Studio.</h1><p class="sub">Enter your 4-digit access PIN to continue.</p><div class="field"><label>Access PIN</label><input id="pinInput" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="••••" autocomplete="one-time-code"></div><button id="pinSubmit" class="btn wide">Unlock Poster Studio</button><div id="pinMsg" class="status"></div></section><section id="starting" class="auth panel hide"><div class="eyebrow">Private creative workspace</div><h1 style="font-size:28px;margin:8px 0">Preparing your studio…</h1><p id="startupmsg" class="sub">Opening your private workspace.</p></section>
 <main id="app" class="hide">
 <section class="hero"><div class="eyebrow">Creative command centre · v0.1</div><h1>Make every<br><span style="color:var(--gold2)">moment count.</span></h1><p>A focused workspace for cinematic achiever posters, competition updates, team recognition and ALZA ORG announcements.</p></section>
 <div class="grid">
@@ -37,6 +37,9 @@ const SUPABASE_URL="https://sqgymglyshbyqhlnmxlj.supabase.co";
 const SUPABASE_KEY="sb_publishable_55cb_Smd0gZ2l5O_qlTy9w__Y26o1ea";
 const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 let category="highrolling",currentUser=null;
+const ACCESS_PIN="1669";
+$("pinSubmit").onclick=async()=>{const entered=$("pinInput").value.trim();if(entered!==ACCESS_PIN){msg("pinMsg","Incorrect PIN. Please try again.");$("pinInput").value="";return;} $("pinGate").classList.add("hide");$("starting").classList.remove("hide");try{await refresh()}catch(e){$("startupmsg").textContent="Could not open the workspace: "+e.message+" — anonymous sign-ins may need to be enabled in Supabase Auth settings."}};
+$("pinInput").addEventListener("keydown",e=>{if(e.key==="Enter")$("pinSubmit").click()});
 const $=id=>document.getElementById(id);
 function msg(id,t){$(id).textContent=t}
 function safe(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
@@ -49,5 +52,5 @@ async function upload(file,type,projectId){const ext=(file.name.split(".").pop()
 $("save").onclick=async()=>{if(!currentUser)return;const title=$("title").value.trim()||"Untitled poster";const brief=$("brief").value.trim();if(!brief){msg("savemsg","Please enter the poster details first.");return}const btn=$("save");btn.disabled=true;msg("savemsg","Saving your brief and assets…");try{const {data,error}=await sb.from("poster_projects").insert({owner_id:currentUser.id,title,category,brief:brief+"\n\nCreative direction: "+$("style").value,status:"draft"}).select().single();if(error)throw error;for(const f of $("photos").files)await upload(f,"person_photo",data.id);if($("logo").files[0]){await upload($("logo").files[0],"brand_logo",null);msg("logostatus","Official logo stored in your private brand assets.")}msg("savemsg","Saved successfully. Your brief and uploaded assets are private to your account.");$("photos").value="";$("logo").value="";$("photolist").textContent="";loadProjects()}catch(e){msg("savemsg","Could not save: "+e.message)}finally{btn.disabled=false}};
 $("generate").onclick=()=>alert("The AI generation engine is the next development stage. Your brief and asset workflow are now being prepared; no image has been generated yet.");
 async function loadProjects(){const {data,error}=await sb.from("poster_projects").select("id,title,category,status,created_at").order("created_at",{ascending:false}).limit(20);if(error){$("projects").innerHTML='<div class="item"><small>'+safe(error.message)+'</small></div>';return}if(!data?.length){$("projects").innerHTML='<div class="item"><small>No saved posters yet. Your first brief will appear here.</small></div>';return}$("projects").innerHTML=data.map(p=>'<div class="item"><strong>'+safe(p.title)+'</strong><small>'+safe(p.category.replaceAll("_"," "))+' · '+safe(p.status)+' · '+new Date(p.created_at).toLocaleDateString()+'</small></div>').join("")}
-refresh().catch(e=>{ $("startupmsg").textContent="Could not open the workspace: "+e.message+" — anonymous sign-ins may need to be enabled in Supabase Auth settings."; });
+/* Studio opens after PIN verification. */
 </script></body></html>

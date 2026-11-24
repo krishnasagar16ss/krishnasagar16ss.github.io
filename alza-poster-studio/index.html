@@ -10,8 +10,8 @@
 @media(max-width:760px){.wrap{padding:15px}.grid{grid-template-columns:1fr}.hero{padding:32px 0 20px}.panel{padding:17px}.top{align-items:flex-start}.categories{grid-template-columns:1fr 1fr}}
 </style></head>
 <body><div class="wrap">
-<header class="top"><div class="brand"><div class="brandmark">A</div><div><strong>ALZA ORG</strong><small>PEOPLE • PURPOSE • PERFORMANCE</small></div></div><div class="row"><span class="pill">POSTER STUDIO</span><button id="logout" class="btn ghost hide">Sign out</button></div></header>
-<section id="auth" class="auth panel"><div class="eyebrow">Private creative workspace</div><h1 style="font-size:30px;margin:8px 0">Welcome back.</h1><p class="sub">Sign in to create and manage ALZA ORG campaign artwork.</p><div class="field"><label>Email</label><input id="email" type="email" placeholder="you@example.com" autocomplete="username"></div><div class="field"><label>Password</label><input id="password" type="password" placeholder="Password" autocomplete="current-password"></div><div class="row"><button id="signin" class="btn">Sign in</button><button id="signup" class="btn secondary">Create account</button></div><div id="authmsg" class="status"></div><p class="note">Use an account enabled in the connected ALZA Daily Planner Supabase project. Account creation depends on its Auth settings.</p></section>
+<header class="top"><div class="brand"><div class="brandmark">A</div><div><strong>ALZA ORG</strong><small>PEOPLE • PURPOSE • PERFORMANCE</small></div></div><div class="row"><span class="pill">POSTER STUDIO</span><span class="pill">NO LOGIN REQUIRED</span></div></header>
+<section id="starting" class="auth panel"><div class="eyebrow">Private creative workspace</div><h1 style="font-size:28px;margin:8px 0">Preparing your studio…</h1><p id="startupmsg" class="sub">Opening your private workspace.</p></section>
 <main id="app" class="hide">
 <section class="hero"><div class="eyebrow">Creative command centre · v0.1</div><h1>Make every<br><span style="color:var(--gold2)">moment count.</span></h1><p>A focused workspace for cinematic achiever posters, competition updates, team recognition and ALZA ORG announcements.</p></section>
 <div class="grid">
@@ -40,11 +40,8 @@ let category="highrolling",currentUser=null;
 const $=id=>document.getElementById(id);
 function msg(id,t){$(id).textContent=t}
 function safe(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-async function refresh(){const {data:{session}}=await sb.auth.getSession();currentUser=session?.user||null;$("auth").classList.toggle("hide",!!currentUser);$("app").classList.toggle("hide",!currentUser);$("logout").classList.toggle("hide",!currentUser);if(currentUser)loadProjects()}
-$("signin").onclick=async()=>{msg("authmsg","Signing in…");const {error}=await sb.auth.signInWithPassword({email:$("email").value,password:$("password").value});msg("authmsg",error?.message||"");if(!error)refresh()};
-$("signup").onclick=async()=>{msg("authmsg","Creating account…");const {data,error}=await sb.auth.signUp({email:$("email").value,password:$("password").value});msg("authmsg",error?.message||(data.session?"Account created.":"Check your email to confirm your account, then sign in."));if(data.session)refresh()};
-$("logout").onclick=async()=>{await sb.auth.signOut();refresh()};
-sb.auth.onAuthStateChange(()=>refresh());
+async function refresh(){const {data:{session},error}=await sb.auth.getSession();if(error)throw error;if(!session){const {data,error:signInError}=await sb.auth.signInAnonymously();if(signInError)throw signInError;currentUser=data.user;}else{currentUser=session.user;}$("starting").classList.add("hide");$("app").classList.remove("hide");loadProjects()}
+
 document.querySelectorAll(".cat").forEach(b=>b.onclick=()=>{document.querySelectorAll(".cat").forEach(x=>x.classList.remove("active"));b.classList.add("active");category=b.dataset.cat});
 $("photos").onchange=()=>msg("photolist",$("photos").files.length+" photo(s) selected");
 $("logo").onchange=()=>msg("logostatus",$("logo").files[0]?.name||"No logo selected");
@@ -52,5 +49,5 @@ async function upload(file,type,projectId){const ext=(file.name.split(".").pop()
 $("save").onclick=async()=>{if(!currentUser)return;const title=$("title").value.trim()||"Untitled poster";const brief=$("brief").value.trim();if(!brief){msg("savemsg","Please enter the poster details first.");return}const btn=$("save");btn.disabled=true;msg("savemsg","Saving your brief and assets…");try{const {data,error}=await sb.from("poster_projects").insert({owner_id:currentUser.id,title,category,brief:brief+"\n\nCreative direction: "+$("style").value,status:"draft"}).select().single();if(error)throw error;for(const f of $("photos").files)await upload(f,"person_photo",data.id);if($("logo").files[0]){await upload($("logo").files[0],"brand_logo",null);msg("logostatus","Official logo stored in your private brand assets.")}msg("savemsg","Saved successfully. Your brief and uploaded assets are private to your account.");$("photos").value="";$("logo").value="";$("photolist").textContent="";loadProjects()}catch(e){msg("savemsg","Could not save: "+e.message)}finally{btn.disabled=false}};
 $("generate").onclick=()=>alert("The AI generation engine is the next development stage. Your brief and asset workflow are now being prepared; no image has been generated yet.");
 async function loadProjects(){const {data,error}=await sb.from("poster_projects").select("id,title,category,status,created_at").order("created_at",{ascending:false}).limit(20);if(error){$("projects").innerHTML='<div class="item"><small>'+safe(error.message)+'</small></div>';return}if(!data?.length){$("projects").innerHTML='<div class="item"><small>No saved posters yet. Your first brief will appear here.</small></div>';return}$("projects").innerHTML=data.map(p=>'<div class="item"><strong>'+safe(p.title)+'</strong><small>'+safe(p.category.replaceAll("_"," "))+' · '+safe(p.status)+' · '+new Date(p.created_at).toLocaleDateString()+'</small></div>').join("")}
-refresh();
+refresh().catch(e=>{ $("startupmsg").textContent="Could not open the workspace: "+e.message+" — anonymous sign-ins may need to be enabled in Supabase Auth settings."; });
 </script></body></html>

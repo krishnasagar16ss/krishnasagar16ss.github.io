@@ -9,7 +9,7 @@
 .wrap{max-width:780px;margin:auto;padding:24px 16px 56px}.brand{text-align:center;letter-spacing:.28em;font-size:12px;font-weight:800;color:var(--gold)}.eyebrow{text-align:center;color:#aab2bf;font-size:10px;letter-spacing:.24em;margin-top:9px}
 h1{text-align:center;font-family:Georgia,serif;font-size:clamp(34px,8vw,54px);font-weight:500;letter-spacing:-.04em;margin:14px 0 5px}.sub{text-align:center;color:#b9c0cb;font-size:13px;margin:0 0 24px}
 .panel{background:linear-gradient(145deg,rgba(23,30,43,.96),rgba(13,17,26,.96));border:1px solid #30394a;border-radius:22px;padding:20px;box-shadow:0 24px 80px #0008}
-label{display:block;color:#d8dce4;font-size:12px;margin:0 0 8px;font-weight:700;letter-spacing:.04em}input{width:100%;background:#090e17;color:#fff;border:1px solid #354155;border-radius:12px;padding:14px;font:inherit;outline:none}input:focus{border-color:var(--gold);box-shadow:0 0 0 3px #e7bd6920}.field{margin-bottom:15px}
+label{display:block;color:#d8dce4;font-size:12px;margin:0 0 8px;font-weight:700;letter-spacing:.04em}input{width:100%;background:#090e17;color:#fff;border:1px solid #354155;border-radius:12px;padding:14px;font:inherit;outline:none}input:focus{border-color:var(--gold);box-shadow:0 0 0 3px #e7bd6920}.field{margin-bottom:15px}.picker{position:relative}.options{position:absolute;z-index:10;top:calc(100% - 7px);left:0;right:0;max-height:260px;overflow-y:auto;background:#101722;border:1px solid #b88b45;border-radius:0 0 13px 13px;box-shadow:0 16px 34px #000b}.option{display:block;width:100%;border:0;border-radius:0;text-align:left;background:transparent;color:#f5f1e8;padding:13px 15px;font-size:14px;font-weight:600}.option:active,.option:hover{background:#293448;color:#f3d18a}.no-options{padding:14px;color:#aeb8c8;font-size:12px}.picker-status{font-size:10px;color:#9aa4b4;margin:7px 2px 0}.picker-status.error{color:#ffb3a7}
 button{border:0;border-radius:12px;padding:14px 18px;font-weight:800;font-size:13px;cursor:pointer}.primary{width:100%;background:linear-gradient(135deg,#f1d18a,#bb8738);color:#17120a;box-shadow:0 8px 28px #d3a34b25}.primary:disabled{opacity:.45;cursor:not-allowed}
 .hint{color:var(--muted);font-size:11px;line-height:1.55;margin:12px 0 0}.stats{display:flex;justify-content:space-between;gap:10px;color:#b5becc;font-size:11px;margin-bottom:15px}.stats b{color:var(--gold)}
 .game{margin-top:18px}.game-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.game-head h2{font:500 22px Georgia,serif;margin:0}.pill{border:1px solid #5b492d;color:#f0ce85;border-radius:99px;padding:7px 10px;font-size:10px;letter-spacing:.08em}
@@ -23,7 +23,7 @@ button{border:0;border-radius:12px;padding:14px 18px;font-weight:800;font-size:1
 <h1>Scratch & Win</h1><p class="sub">One form. One chance. One surprise.</p>
 <section class="panel" id="entry">
 <div class="stats"><span>COMPETITION DAY</span><b>25 NOVEMBER 2026</b></div>
-<div class="field"><label for="associate">SELECT ASSOCIATE</label><input id="associate" list="associate-list" placeholder="Search your name..." autocomplete="off"><datalist id="associate-list"></datalist></div>
+<div class="field picker"><label for="associate">SELECT ASSOCIATE</label><input id="associate" type="search" placeholder="Tap and type to search your name..." autocomplete="off" autocapitalize="words" aria-autocomplete="list" aria-expanded="false"><div id="associate-options" class="options hidden" role="listbox"></div><div id="associate-status" class="picker-status">Loading Associate list…</div></div>
 <div class="field"><label for="supports">SUPPORT COUNT</label><input id="supports" type="number" min="0" step="1" inputmode="numeric" placeholder="Enter support count"></div>
 <button class="primary" id="start">UNLOCK MY SCRATCH CARD</button>
 <p class="hint">Your chance is verified live against today's FORM entries in ALZA TMC Manager. Each eligible FORM entry can be used only once.</p>
@@ -37,17 +37,34 @@ button{border:0;border-radius:12px;padding:14px 18px;font-weight:800;font-size:1
 <div class="overlay hidden" id="modal"><div class="dialog"><div class="symbol" id="modal-icon">✨</div><h2 id="modal-title">Congratulations!</h2><p id="modal-text"></p><button class="primary" id="modal-ok">CONTINUE</button></div></div>
 <script>
 const API="https://sqgymglyshbyqhlnmxlj.supabase.co/functions/v1/scratch-win-api";
-let associates=[],activeAttempt=null,selectedName="";
+let associates=[],activeAttempt=null,selectedName="",selectedAssociate=null;
 const $=id=>document.getElementById(id);
 async function callApi(payload){const r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});const d=await r.json();if(!r.ok&&!d.no_forms)throw new Error(d.error||d.message||"Something went wrong");return {status:r.status,data:d};}
 function modal(title,msg,icon="✨"){ $("modal-title").textContent=title;$("modal-text").textContent=msg;$("modal-icon").textContent=icon;$("modal").classList.remove("hidden");}
 $("modal-ok").onclick=()=> $("modal").classList.add("hidden");
-async function loadAssociates(){try{const {data}=await callApi({action:"associates"});associates=data.associates||[];$("associate-list").innerHTML=associates.map(a=>'<option value="'+escapeHtml(a.name)+'"></option>').join("");}catch(e){modal("Connection issue","Could not load the Associate list. Please try again in a moment.","⚠️");}}
+function renderAssociateOptions(query=""){
+ const box=$("associate-options"),q=query.trim().toLocaleLowerCase();
+ const matches=associates.filter(a=>a.name.toLocaleLowerCase().includes(q)).slice(0,60);
+ box.innerHTML="";
+ if(!matches.length){box.innerHTML='<div class="no-options">No matching Associate found</div>';}
+ else matches.forEach(a=>{const b=document.createElement("button");b.type="button";b.className="option";b.setAttribute("role","option");b.textContent=a.name;b.addEventListener("click",()=>{selectedAssociate=a;$("associate").value=a.name;box.classList.add("hidden");$("associate").setAttribute("aria-expanded","false");$("associate-status").textContent="Selected: "+a.name;$("associate-status").classList.remove("error");});box.appendChild(b);});
+ box.classList.remove("hidden");$("associate").setAttribute("aria-expanded","true");
+}
+async function loadAssociates(){
+ const status=$("associate-status");
+ try{const {data}=await callApi({action:"associates"});associates=data.associates||[];
+ status.textContent=associates.length+" Associates loaded · Tap to search";status.classList.remove("error");
+ }catch(e){status.textContent="Could not load Associate list. Tap here to retry.";status.classList.add("error");}
+}
+$("associate").addEventListener("focus",()=>renderAssociateOptions($("associate").value));
+$("associate").addEventListener("input",()=>{selectedAssociate=null;$("associate-status").textContent="Choose your name from the list";renderAssociateOptions($("associate").value);});
+$("associate-status").addEventListener("click",()=>{if(!associates.length)loadAssociates();else renderAssociateOptions($("associate").value);});
+document.addEventListener("click",e=>{if(!e.target.closest(".picker")){$("associate-options").classList.add("hidden");$("associate").setAttribute("aria-expanded","false");}});
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 $("start").onclick=async()=>{
- const name=$("associate").value.trim(),supports=Number($("supports").value);
- const person=associates.find(a=>a.name.toLowerCase()===name.toLowerCase());
- if(!person){modal("Select your name","Choose your name from the Associate list before continuing.","👤");return;}
+ const supports=Number($("supports").value);
+ const person=selectedAssociate;
+ if(!person){modal("Select your name","Please tap your name in the search results to select it before continuing.","👤");$("associate").focus();return;}
  if($("supports").value===""||!Number.isInteger(supports)||supports<0){modal("Enter support count","Please enter your support count before scratching.","✍️");return;}
  $("start").disabled=true;$("start").textContent="VERIFYING TMC FORM…";
  try{

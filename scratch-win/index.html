@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#090b12"><title>ALZA ORG | Scratch & Win</title>
+<style>
+:root{color-scheme:dark;--bg:#090b12;--panel:#121722;--gold:#e7bd69;--muted:#9aa4b4;--line:#283142}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -20%,#3a2b17 0,#111522 42%,#080a10 100%);color:#f7f4ed;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;min-height:100vh}
+.wrap{max-width:780px;margin:auto;padding:24px 16px 56px}.brand{text-align:center;letter-spacing:.28em;font-size:12px;font-weight:800;color:var(--gold)}.eyebrow{text-align:center;color:#aab2bf;font-size:10px;letter-spacing:.24em;margin-top:9px}
+h1{text-align:center;font-family:Georgia,serif;font-size:clamp(34px,8vw,54px);font-weight:500;letter-spacing:-.04em;margin:14px 0 5px}.sub{text-align:center;color:#b9c0cb;font-size:13px;margin:0 0 24px}
+.panel{background:linear-gradient(145deg,rgba(23,30,43,.96),rgba(13,17,26,.96));border:1px solid #30394a;border-radius:22px;padding:20px;box-shadow:0 24px 80px #0008}
+label{display:block;color:#d8dce4;font-size:12px;margin:0 0 8px;font-weight:700;letter-spacing:.04em}input{width:100%;background:#090e17;color:#fff;border:1px solid #354155;border-radius:12px;padding:14px;font:inherit;outline:none}input:focus{border-color:var(--gold);box-shadow:0 0 0 3px #e7bd6920}.field{margin-bottom:15px}
+button{border:0;border-radius:12px;padding:14px 18px;font-weight:800;font-size:13px;cursor:pointer}.primary{width:100%;background:linear-gradient(135deg,#f1d18a,#bb8738);color:#17120a;box-shadow:0 8px 28px #d3a34b25}.primary:disabled{opacity:.45;cursor:not-allowed}
+.hint{color:var(--muted);font-size:11px;line-height:1.55;margin:12px 0 0}.stats{display:flex;justify-content:space-between;gap:10px;color:#b5becc;font-size:11px;margin-bottom:15px}.stats b{color:var(--gold)}
+.game{margin-top:18px}.game-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.game-head h2{font:500 22px Georgia,serif;margin:0}.pill{border:1px solid #5b492d;color:#f0ce85;border-radius:99px;padding:7px 10px;font-size:10px;letter-spacing:.08em}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.card{position:relative;aspect-ratio:1.08/1;border-radius:14px;overflow:hidden;background:linear-gradient(145deg,#252d3a,#111824);border:1px solid #586274;display:grid;place-items:center}.amount{font:700 clamp(21px,6vw,32px) Georgia,serif;color:#f5d58e;text-shadow:0 2px 18px #e8b95730}.amount small{font:700 10px system-ui;display:block;text-align:center;color:#aab3c2;letter-spacing:.15em;margin-top:5px}.foil{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:crosshair}.card.winner{border:2px solid var(--gold);box-shadow:0 0 28px #d7a64b35}.card.winner:after{content:'WINNER';position:absolute;top:7px;right:7px;background:#e8c77e;color:#1c160c;font-size:8px;font-weight:900;letter-spacing:.12em;padding:4px 6px;border-radius:99px}
+.result{margin-top:18px;text-align:center;padding:20px;border:1px solid #70572f;border-radius:18px;background:linear-gradient(135deg,#292013,#151923)}.result h3{font:500 28px Georgia,serif;color:#f4d58e;margin:0 0 7px}.result .big{font:700 42px Georgia,serif;color:#fff}.result p{color:#c1c8d2;font-size:12px}.actions{display:flex;gap:9px;margin-top:14px}.actions button{flex:1}.secondary{background:#273142;color:#f4f0e7;border:1px solid #45536a}
+.hidden{display:none!important}.footer{text-align:center;color:#778292;font-size:10px;letter-spacing:.08em;margin-top:24px}.overlay{position:fixed;inset:0;background:#02040bd9;display:grid;place-items:center;padding:18px;z-index:20}.dialog{max-width:420px;width:100%;background:linear-gradient(145deg,#222b3b,#10151f);border:1px solid #c99b4e;border-radius:22px;padding:28px;text-align:center;box-shadow:0 24px 100px #000}.dialog .symbol{font-size:38px}.dialog h2{font:500 30px Georgia,serif;color:#f4d58e;margin:8px 0}.dialog p{color:#c3cad4;line-height:1.55;font-size:13px}.dialog button{margin-top:12px;min-width:140px}
+@media(max-width:430px){.wrap{padding:18px 12px 40px}.panel{padding:16px}.grid{gap:7px}.card{border-radius:11px}.actions{flex-direction:column}}
+</style></head>
+<body><main class="wrap">
+<div class="brand">ALZA ORG</div><div class="eyebrow">PEOPLE • PURPOSE • PERFORMANCE</div>
+<h1>Scratch & Win</h1><p class="sub">One form. One chance. One surprise.</p>
+<section class="panel" id="entry">
+<div class="stats"><span>COMPETITION DAY</span><b>25 NOVEMBER 2026</b></div>
+<div class="field"><label for="associate">SELECT ASSOCIATE</label><input id="associate" list="associate-list" placeholder="Search your name..." autocomplete="off"><datalist id="associate-list"></datalist></div>
+<div class="field"><label for="supports">SUPPORT COUNT</label><input id="supports" type="number" min="0" step="1" inputmode="numeric" placeholder="Enter support count"></div>
+<button class="primary" id="start">UNLOCK MY SCRATCH CARD</button>
+<p class="hint">Your chance is verified live against today's FORM entries in ALZA TMC Manager. Each eligible FORM entry can be used only once.</p>
+</section>
+<section class="panel game hidden" id="game">
+<div class="game-head"><h2>Your lucky grid</h2><span class="pill" id="support-pill">0 SUPPORTS</span></div>
+<p class="hint" style="margin:0 0 14px">Scratch any one card completely to reveal your prize. The other eight amounts will be revealed at the same time.</p>
+<div class="grid" id="grid"></div><div id="result" class="result hidden"></div>
+</section>
+<div class="footer">A ONE-DAY ALZA ORG EXPERIENCE · 25.11.2026</div></main>
+<div class="overlay hidden" id="modal"><div class="dialog"><div class="symbol" id="modal-icon">✨</div><h2 id="modal-title">Congratulations!</h2><p id="modal-text"></p><button class="primary" id="modal-ok">CONTINUE</button></div></div>
+<script>
+const API="https://sqgymglyshbyqhlnmxlj.supabase.co/functions/v1/scratch-win-api";
+let associates=[],activeAttempt=null,selectedName="";
+const $=id=>document.getElementById(id);
+async function callApi(payload){const r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});const d=await r.json();if(!r.ok&&!d.no_forms)throw new Error(d.error||d.message||"Something went wrong");return {status:r.status,data:d};}
+function modal(title,msg,icon="✨"){ $("modal-title").textContent=title;$("modal-text").textContent=msg;$("modal-icon").textContent=icon;$("modal").classList.remove("hidden");}
+$("modal-ok").onclick=()=> $("modal").classList.add("hidden");
+async function loadAssociates(){try{const {data}=await callApi({action:"associates"});associates=data.associates||[];$("associate-list").innerHTML=associates.map(a=>'<option value="'+escapeHtml(a.name)+'"></option>').join("");}catch(e){modal("Connection issue","Could not load the Associate list. Please try again in a moment.","⚠️");}}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+$("start").onclick=async()=>{
+ const name=$("associate").value.trim(),supports=Number($("supports").value);
+ const person=associates.find(a=>a.name.toLowerCase()===name.toLowerCase());
+ if(!person){modal("Select your name","Choose your name from the Associate list before continuing.","👤");return;}
+ if($("supports").value===""||!Number.isInteger(supports)||supports<0){modal("Enter support count","Please enter your support count before scratching.","✍️");return;}
+ $("start").disabled=true;$("start").textContent="VERIFYING TMC FORM…";
+ try{
+  const {status,data}=await callApi({action:"start",associate_id:person.id,associate_name:person.name,support_count:supports});
+  if(data.no_forms){modal("UPDATE NEW FORM","Update new form on TMC APP","📋");return;}
+  activeAttempt=data.attempt_id;selectedName=person.name;
+  $("entry").classList.add("hidden");$("game").classList.remove("hidden");$("support-pill").textContent=supports+" SUPPORTS";buildGrid();
+  window.scrollTo({top:$("game").offsetTop-16,behavior:"smooth"});
+ }catch(e){modal("Unable to start",e.message,"⚠️");}
+ finally{$("start").disabled=false;$("start").textContent="UNLOCK MY SCRATCH CARD";}
+};
+function buildGrid(){const grid=$("grid");grid.innerHTML="";for(let i=0;i<9;i++){
+ const card=document.createElement("div");card.className="card";card.innerHTML='<div class="amount">?</div><canvas class="foil"></canvas>';grid.appendChild(card);
+ const canvas=card.querySelector("canvas"),ctx=canvas.getContext("2d");let scratching=false,moves=0,done=false;
+ function cover(){const rect=card.getBoundingClientRect();canvas.width=Math.max(1,Math.floor(rect.width*devicePixelRatio));canvas.height=Math.max(1,Math.floor(rect.height*devicePixelRatio));ctx.scale(devicePixelRatio,devicePixelRatio);const g=ctx.createLinearGradient(0,0,rect.width,rect.height);g.addColorStop(0,"#d7dce4");g.addColorStop(.45,"#7d899b");g.addColorStop(1,"#c2c9d2");ctx.fillStyle=g;ctx.fillRect(0,0,rect.width,rect.height);ctx.fillStyle="#303a4b";ctx.font="800 12px system-ui";ctx.textAlign="center";ctx.fillText("SCRATCH HERE",rect.width/2,rect.height/2);ctx.globalCompositeOperation="destination-out";}
+ cover();
+ function scratch(e){if(!scratching||done)return;const r=canvas.getBoundingClientRect();const x=e.clientX-r.left,y=e.clientY-r.top;ctx.beginPath();ctx.arc(x,y,19,0,Math.PI*2);ctx.fill();moves++;if(moves>48){done=true;canvas.style.pointerEvents="none";reveal(i);}}
+ canvas.addEventListener("pointerdown",e=>{if(done)return;scratching=true;canvas.setPointerCapture(e.pointerId);scratch(e);});
+ canvas.addEventListener("pointermove",scratch);canvas.addEventListener("pointerup",()=>scratching=false);canvas.addEventListener("pointercancel",()=>scratching=false);
+ }}
+async function reveal(index){if(!activeAttempt)return;document.querySelectorAll(".foil").forEach(c=>c.style.pointerEvents="none");
+ try{const {data}=await callApi({action:"reveal",attempt_id:activeAttempt,selected_index:index});const a=data.attempt;
+ document.querySelectorAll(".card").forEach((el,i)=>{el.querySelector(".amount").innerHTML="₹"+a.card_values[i]+'<small>ALZA ORG</small>';el.querySelector("canvas").classList.add("hidden");if(i===a.selected_index)el.classList.add("winner");});
+ const result=$("result");result.classList.remove("hidden");result.innerHTML='<h3>Congratulations, '+escapeHtml(a.associate_name)+'!</h3><div class="big">₹'+a.prize_amount+'</div><p>You have won Rs '+a.prize_amount+'. Your winning card is revealed.</p><div class="actions"><button class="primary" id="share">SHARE MY WIN</button><button class="secondary" id="save">SAVE CERTIFICATE</button></div>';
+ $("share").onclick=()=>shareCertificate(a);$("save").onclick=()=>saveCertificate(a);
+ result.scrollIntoView({behavior:"smooth",block:"center"});
+ }catch(e){modal("Could not reveal",e.message,"⚠️");}
+}
+function certificateCanvas(a){const c=document.createElement("canvas");c.width=1200;c.height=1500;const x=c.getContext("2d");const g=x.createLinearGradient(0,0,1200,1500);g.addColorStop(0,"#0b101a");g.addColorStop(.55,"#202b3c");g.addColorStop(1,"#090c13");x.fillStyle=g;x.fillRect(0,0,1200,1500);x.strokeStyle="#d6ad62";x.lineWidth=5;x.strokeRect(42,42,1116,1416);x.textAlign="center";x.fillStyle="#e8c77e";x.font="bold 34px Arial";x.fillText("ALZA ORG",600,170);x.font="22px Arial";x.fillStyle="#aeb8c8";x.fillText("PEOPLE • PURPOSE • PERFORMANCE",600,218);x.strokeStyle="#9c7840";x.beginPath();x.moveTo(220,290);x.lineTo(980,290);x.stroke();x.fillStyle="#fff";x.font="54px Georgia";x.fillText("CONGRATULATIONS",600,430);x.fillStyle="#d9b66e";x.font="38px Georgia";x.fillText(a.associate_name,600,535);x.fillStyle="#c5ceda";x.font="26px Arial";x.fillText("YOU HAVE WON",600,655);x.fillStyle="#f3d48f";x.font="bold 118px Georgia";x.fillText("₹"+a.prize_amount,600,820);x.fillStyle="#c3cbd6";x.font="24px Arial";x.fillText("SCRATCH & WIN · 25 NOVEMBER 2026",600,965);x.fillStyle="#8895a8";x.font="20px Arial";x.fillText("One form. One chance. One surprise.",600,1070);x.fillStyle="#e2c17c";x.font="20px Arial";x.fillText("ALZA ORG",600,1320);return c;}
+async function shareCertificate(a){const c=certificateCanvas(a);c.toBlob(async blob=>{if(!blob)return;const file=new File([blob],"ALZA-ORG-Win-"+a.associate_name.replace(/[^a-z0-9]/gi,"-")+".png",{type:"image/png"});try{if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:"ALZA ORG Scratch & Win",text:"I won ₹"+a.prize_amount+" in ALZA ORG Scratch & Win!"});}else{downloadBlob(blob,file.name);window.open("https://wa.me/?text="+encodeURIComponent("I won ₹"+a.prize_amount+" in ALZA ORG Scratch & Win!"),"_blank");}}catch(e){if(e.name!=="AbortError")modal("Share unavailable","Please save the certificate and share it in your WhatsApp group.","⚠️");}},"image/png");}
+function saveCertificate(a){certificateCanvas(a).toBlob(blob=>{if(blob)downloadBlob(blob,"ALZA-ORG-Win-"+a.associate_name.replace(/[^a-z0-9]/gi,"-")+".png");},"image/png");}
+function downloadBlob(blob,name){const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1500);}
+loadAssociates();
+</script></body></html>

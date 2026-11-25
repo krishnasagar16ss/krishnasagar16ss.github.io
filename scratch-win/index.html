@@ -37,7 +37,7 @@ button{border:0;border-radius:12px;padding:14px 18px;font-weight:800;font-size:1
 <div class="overlay hidden" id="modal"><div class="dialog"><div class="symbol" id="modal-icon">✨</div><h2 id="modal-title">Congratulations!</h2><p id="modal-text"></p><button class="primary" id="modal-ok">CONTINUE</button></div></div>
 <script>
 const API="https://sqgymglyshbyqhlnmxlj.supabase.co/functions/v1/scratch-win-api";
-let associates=[],activeAttempt=null,selectedName="",selectedAssociate=null;
+let associates=[],activeAttempt=null,selectedName="",selectedAssociate=null,preparedCertificateFile=null;
 const $=id=>document.getElementById(id);
 async function callApi(payload){const r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});const d=await r.json();if(!r.ok&&!d.no_forms)throw new Error(d.error||d.message||"Something went wrong");return {status:r.status,data:d};}
 function modal(title,msg,icon="✨"){ $("modal-title").textContent=title;$("modal-text").textContent=msg;$("modal-icon").textContent=icon;$("modal").classList.remove("hidden");}
@@ -88,13 +88,29 @@ function buildGrid(){const grid=$("grid");grid.innerHTML="";for(let i=0;i<9;i++)
 async function reveal(index){if(!activeAttempt)return;document.querySelectorAll(".foil").forEach(c=>c.style.pointerEvents="none");
  try{const {data}=await callApi({action:"reveal",attempt_id:activeAttempt,selected_index:index});const a=data.attempt;
  document.querySelectorAll(".card").forEach((el,i)=>{el.querySelector(".amount").innerHTML="₹"+a.card_values[i]+'<small>ALZA ORG</small>';el.querySelector("canvas").classList.add("hidden");if(i===a.selected_index)el.classList.add("winner");});
- const result=$("result");result.classList.remove("hidden");result.innerHTML='<h3>Congratulations, '+escapeHtml(a.associate_name)+'!</h3><div class="big">₹'+a.prize_amount+'</div><p>You have won Rs '+a.prize_amount+'. Your winning card is revealed.</p><div class="actions"><button class="primary" id="share">SHARE MY WIN</button><button class="secondary" id="save">SAVE CERTIFICATE</button></div>';
- $("share").onclick=()=>shareCertificate(a);$("save").onclick=()=>saveCertificate(a);
+ const result=$("result");result.classList.remove("hidden");result.innerHTML='<h3>Congratulations, '+escapeHtml(a.associate_name)+'!</h3><div class="big">₹'+a.prize_amount+'</div><p>You have won Rs '+a.prize_amount+'. Your winning card is revealed.</p><div class="actions"><button class="primary" id="share" disabled>PREPARING CERTIFICATE…</button><button class="secondary" id="save">SAVE CERTIFICATE</button></div>';
+ const certificateName="ALZA-ORG-Win-"+a.associate_name.replace(/[^a-z0-9]/gi,"-")+".png";
+ certificateCanvas(a).toBlob(blob=>{
+   if(!blob){$("share").textContent="SAVE CERTIFICATE";$("share").disabled=false;$("share").onclick=()=>saveCertificate(a);return;}
+   preparedCertificateFile=new File([blob],certificateName,{type:"image/png"});
+   $("share").textContent="SHARE CERTIFICATE IMAGE";$("share").disabled=false;
+   $("share").onclick=()=>{
+     if(navigator.share){
+       try{
+         const sharePromise=navigator.share({files:[preparedCertificateFile],title:"ALZA ORG Scratch & Win",text:"I won ₹"+a.prize_amount+" in ALZA ORG Scratch & Win!"});
+         sharePromise.catch(err=>{if(err.name!=="AbortError"){downloadBlob(new Blob([preparedCertificateFile],{type:"image/png"}),certificateName);modal("Certificate saved","Your certificate image has been saved. Open WhatsApp, choose your group and attach the saved image.","📷");}});
+       }catch(err){downloadBlob(new Blob([preparedCertificateFile],{type:"image/png"}),certificateName);modal("Certificate saved","Your certificate image has been saved. Open WhatsApp, choose your group and attach the saved image.","📷");}
+     }else{
+       downloadBlob(new Blob([preparedCertificateFile],{type:"image/png"}),certificateName);
+       modal("Certificate saved","Your browser cannot share image files directly. Open WhatsApp, choose your group and attach the saved certificate image.","📷");
+     }
+   };
+ },"image/png");
+ $("save").onclick=()=>saveCertificate(a);
  result.scrollIntoView({behavior:"smooth",block:"center"});
  }catch(e){modal("Could not reveal",e.message,"⚠️");}
 }
 function certificateCanvas(a){const c=document.createElement("canvas");c.width=1200;c.height=1500;const x=c.getContext("2d");const g=x.createLinearGradient(0,0,1200,1500);g.addColorStop(0,"#0b101a");g.addColorStop(.55,"#202b3c");g.addColorStop(1,"#090c13");x.fillStyle=g;x.fillRect(0,0,1200,1500);x.strokeStyle="#d6ad62";x.lineWidth=5;x.strokeRect(42,42,1116,1416);x.textAlign="center";x.fillStyle="#e8c77e";x.font="bold 34px Arial";x.fillText("ALZA ORG",600,170);x.font="22px Arial";x.fillStyle="#aeb8c8";x.fillText("PEOPLE • PURPOSE • PERFORMANCE",600,218);x.strokeStyle="#9c7840";x.beginPath();x.moveTo(220,290);x.lineTo(980,290);x.stroke();x.fillStyle="#fff";x.font="54px Georgia";x.fillText("CONGRATULATIONS",600,430);x.fillStyle="#d9b66e";x.font="38px Georgia";x.fillText(a.associate_name,600,535);x.fillStyle="#c5ceda";x.font="26px Arial";x.fillText("YOU HAVE WON",600,655);x.fillStyle="#f3d48f";x.font="bold 118px Georgia";x.fillText("₹"+a.prize_amount,600,820);x.fillStyle="#c3cbd6";x.font="24px Arial";x.fillText("SCRATCH & WIN · 25 NOVEMBER 2026",600,965);x.fillStyle="#8895a8";x.font="20px Arial";x.fillText("One form. One chance. One surprise.",600,1070);x.fillStyle="#e2c17c";x.font="20px Arial";x.fillText("ALZA ORG",600,1320);return c;}
-async function shareCertificate(a){const c=certificateCanvas(a);c.toBlob(async blob=>{if(!blob)return;const file=new File([blob],"ALZA-ORG-Win-"+a.associate_name.replace(/[^a-z0-9]/gi,"-")+".png",{type:"image/png"});try{if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:"ALZA ORG Scratch & Win",text:"I won ₹"+a.prize_amount+" in ALZA ORG Scratch & Win!"});}else{downloadBlob(blob,file.name);window.open("https://wa.me/?text="+encodeURIComponent("I won ₹"+a.prize_amount+" in ALZA ORG Scratch & Win!"),"_blank");}}catch(e){if(e.name!=="AbortError")modal("Share unavailable","Please save the certificate and share it in your WhatsApp group.","⚠️");}},"image/png");}
 function saveCertificate(a){certificateCanvas(a).toBlob(blob=>{if(blob)downloadBlob(blob,"ALZA-ORG-Win-"+a.associate_name.replace(/[^a-z0-9]/gi,"-")+".png");},"image/png");}
 function downloadBlob(blob,name){const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1500);}
 loadAssociates();
